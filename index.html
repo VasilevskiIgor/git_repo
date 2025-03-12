@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zdrowe Słodkości - Przepisy na dietetyczne ciasta bez wyrzutów sumienia</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f9f7f4;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            gap: 30px;
+        }
+        .left-column {
+            flex: 2;
+            min-width: 300px;
+        }
+        .right-column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            position: sticky;
+            top: 30px;
+        }
+        .benefits {
+            margin-bottom: 40px;
+        }
+        .benefit-item {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .benefit-item:hover {
+            transform: translateY(-5px);
+        }
+        .benefit-icon {
+            margin-right: 15px;
+            color: #8bc34a;
+            font-size: 2rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        .preview {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .preview h3 {
+            color: #8bc34a;
+            border-bottom: 2px dashed #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .preview ul {
+            padding-left: 20px;
+        }
+        .preview li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 10px;
+        }
+        .preview li::before {
+            content: "🍰";
+            margin-right: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #8bc34a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.2);
+        }
+        .price-container {
+            position: relative;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .original-price {
+            font-size: 1.2rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 5px;
+        }
+        .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #8bc34a;
+            margin: 10px 0;
+        }
+        .price-note {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .discount-badge {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background-color: #ff6b6b;
+            color: white;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 30px;
+            transform: rotate(15deg);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #8bc34a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(139, 195, 74, 0.2);
+        }
+        .btn:hover {
+            background-color: #7cb342;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(139, 195, 74, 0.3);
+        }
+        .secure-payment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .secure-payment img {
+            margin-right: 8px;
+            height: 20px;
+        }
+        .testimonials {
+            margin: 60px 0;
+        }
+        .testimonials h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            position: relative;
+        }
+        .testimonials h2:after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #8bc34a;
+            margin: 15px auto;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .testimonial {
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        .testimonial:before {
+            content: """;
+            position: absolute;
+            top: 0;
+            left: 10px;
+            font-size: 5rem;
+            color: rgba(139, 195, 74, 0.2);
+            line-height: 1;
+        }
+        .testimonial p {
+            position: relative;
+            z-index: 1;
+        }
+        .author {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .author-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #8bc34a;
+        }
+        .author-info {
+            line-height: 1.3;
+        }
+        .author-name {
+            font-weight: 600;
+        }
+        .author-title {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .features {
+            background-color: #f6f9f0;
+            padding: 60px 0;
+            margin: 60px 0;
+            border-radius: 20px;
+        }
+        .features h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+        .feature-item {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .feature-item:hover {
+            transform: translateY(-10px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #8bc34a;
+            margin-bottom: 20px;
+        }
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .recipe-preview {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .recipe-title {
+            color: #8bc34a;
+            border-bottom: 2px dashed #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .recipe-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .recipe-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            min-width: 100px;
+        }
+        .meta-label {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .meta-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 30px 30px 0 0;
+            margin-top: 60px;
+        }
+        .guarantee {
+            background-color: #fff;
+            border: 2px dashed #8bc34a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .guarantee-icon {
+            font-size: 2rem;
+            color: #8bc34a;
+            margin-bottom: 10px;
+        }
+        .countdown {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .countdown-timer {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            .left-column, .right-column {
+                flex: none;
+            }
+            .right-column {
+                position: static;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .feature-grid, .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Zdrowe Słodkości</h1>
+            <div class="subtitle">Odkryj 50 przepisów na pyszne, niskokaloryczne ciasta, które smakują jak grzech, a są dobre dla sylwetki</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <div class="left-column">
+                <h2>Dlaczego ten eBook zmieni Twoje podejście do słodkości?</h2>
+                <div class="benefits">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🍓</div>
+                        <div>
+                            <strong>Niskokaloryczne alternatywy</strong>
+                            <p>Każdy przepis zawiera mniej niż 200 kcal na porcję, co pozwala cieszyć się słodkościami bez wyrzutów sumienia</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🧁</div>
+                        <div>
+                            <strong>Pełen smak bez kompromisów</strong>
+                            <p>Przepisy zostały wielokrotnie przetestowane, aby zapewnić idealny smak przy minimalnej ilości kalorii</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🥄</div>
+                        <div>
+                            <strong>Proste składniki i łatwe przygotowanie</strong>
+                            <p>Wszystkie przepisy wykorzystują składniki dostępne w każdym supermarkecie i są łatwe w przygotowaniu</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📱</div>
+                        <div>
+                            <strong>Dokładne informacje o wartościach odżywczych</strong>
+                            <p>Każdy przepis zawiera pełne informacje o kaloriach, białku, tłuszczach i węglowodanach</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-preview">
+                    <h3 class="recipe-title">Fragment przepisu: Czekoladowe brownie z fasoli (tylko 120 kcal na porcję!)</h3>
+                    <div class="recipe-details">
+                        <div class="recipe-meta">
+                            <span class="meta-label">Czas</span>
+                            <span class="meta-value">30 min</span>
+                        </div>
+                        <div class="recipe-meta">
+                            <span class="meta-label">Kalorie</span>
+                            <span class="meta-value">120 kcal</span>
+                        </div>
+                        <div class="recipe-meta">
+                            <span class="meta-label">Białko</span>
+                            <span class="meta-value">7g</span>
+                        </div>
+                        <div class="recipe-meta">
+                            <span class="meta-label">Trudność</span>
+                            <span class="meta-value">Łatwy</span>
+                        </div>
+                    </div>
+                    <p>Odkryj sekret wilgotnego brownie bez mąki i masła! Ten przepis wykorzystuje czarną fasolę jako bazę, dodając białka i błonnika do Twojego ulubionego deseru. Goście nigdy nie zgadną, że jedzą zdrowszą wersję klasyka...</p>
+                    <p style="color: #8bc34a; font-weight: bold;">Pełny przepis znajdziesz w eBooku!</p>
+                </div>
+
+                <h2>Co zawiera eBook „Zdrowe Słodkości"?</h2>
+                <div class="preview">
+                    <h3>Spis rozdziałów:</h3>
+                    <ul>
+                        <li>Podstawy pieczenia fit – zamienniki cukru, mąki i tłuszczu</li>
+                        <li>Ciasta czekoladowe i brownie – 10 przepisów poniżej 200 kcal</li>
+                        <li>Serniki i ciasta z owocami – 15 lekkich wariantów</li>
+                        <li>Muffiny i babeczki – szybkie przekąski do 150 kcal</li>
+                        <li>Tarty i ciasta kruche – zdrowe wersje klasycznych wypieków</li>
+                        <li>Desery bez pieczenia – idealne na upalne dni</li>
+                        <li>Dodatki – zdrowe kremy, polewy i sosy</li>
+                    </ul>
+                </div>
+
+                <div class="features">
+                    <h2>Co jeszcze otrzymasz?</h2>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">📋</div>
+                            <div class="feature-title">Lista zakupów na 2 tygodnie</div>
+                            <p>Gotowa lista zakupów, dzięki której łatwo zaplanujesz przygotowanie kilku przepisów w ciągu dwóch tygodni</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🔄</div>
+                            <div class="feature-title">Tabela zamienników</div>
+                            <p>Kompletna tabela zamienników składników dla osób z alergiami lub specjalnymi wymaganiami dietetycznymi</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-title">Dostęp mobilny</div>
+                            <p>Wygodny format PDF do czytania na dowolnym urządzeniu – telefonie, tablecie czy komputerze</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonials">
+                    <h2>Co mówią czytelnicy</h2>
+                    <div class="testimonial-grid">
+                        <div class="testimonial">
+                            <p>"Dzięki tym przepisom mogę cieszyć się słodkościami nawet na diecie redukcyjnej. Sernik z ricotty to mój absolutny hit – tylko 140 kcal, a smakuje obłędnie!"</p>
+                            <div class="author">
+                                <div class="author-image">A</div>
+                                <div class="author-info">
+                                    <div class="author-name">Anna Kowalska</div>
+                                    <div class="author-title">Straciła 12 kg w 6 miesięcy</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial">
+                            <p>"Jako trener personalny polecam ten eBook wszystkim moim klientkom. Wreszcie przestały sabotować swoje diety weekendowymi wypiekami!"</p>
+                            <div class="author">
+                                <div class="author-image">M</div>
+                                <div class="author-info">
+                                    <div class="author-name">Marek Nowak</div>
+                                    <div class="author-title">Trener personalny</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial">
+                            <p>"Brownie z fasoli zmieniło moje życie! Moje dzieci uwielbiają te ciasta i nie mają pojęcia, że są zdrowsze. Podwójna wygrana dla mamy!"</p>
+                            <div class="author">
+                                <div class="author-image">K</div>
+                                <div class="author-info">
+                                    <div class="author-name">Karolina Wiśniewska</div>
+                                    <div class="author-title">Mama trójki dzieci</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <h2>Zdobądź dostęp teraz</h2>
+                <div class="price-container">
+                    <div class="discount-badge">-50%</div>
+                    <div class="original-price">78 zł</div>
+                    <div class="price">39 zł</div>
+                    <div class="price-note">Jednorazowa płatność, dożywotni dostęp</div>
+                </div>
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="email">Adres e-mail</label>
+                        <input type="email" id="email" name="email" placeholder="Twój adres e-mail" required>
+                    </div>
+                    <button type="button" id="checkout-button" class="btn">KUP TERAZ</button>
+                </form>
+                <div class="secure-payment">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8 14C4.69 14 2 11.31 2 8C2 4.69 4.69 2 8 2C11.31 2 14 4.69 14 8C14 11.31 11.31 14 8 14ZM11.1 5.3L6.7 9.7L4.9 7.9C4.5 7.5 3.9 7.5 3.5 7.9C3.1 8.3 3.1 8.9 3.5 9.3L6.1 11.9C6.5 12.3 7.1 12.3 7.5 11.9L12.5 6.9C12.9 6.5 12.9 5.9 12.5 5.5C12.1 5.1 11.5 5.1 11.1 5.3Z" fill="#8bc34a"/>
+                    </svg>
+                    <span>Bezpieczna płatność przez Stripe</span>
+                </div>
+                <div class="countdown">
+                    <p>Promocja kończy się za:</p>
+                    <div class="countdown-timer" id="countdown">23:59:59</div>
+                </div>
+                <div class="guarantee">
+                    <div class="guarantee-icon">✓</div>
+                    <strong>14-dniowa gwarancja zwrotu pieniędzy</strong>
+                    <p>Jeśli z jakiegokolwiek powodu nie będziesz zadowolony/a z eBooka, zwrócimy Ci pieniądze bez zadawania pytań.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Zdrowe Słodkości. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Klucz publikacyjny Stripe - zastąp swoim kluczem
+        const stripe = Stripe('pk_test_TWÓJ_KLUCZ_PUBLIKACYJNY');
+        
+        const checkoutButton = document.getElementById('checkout-button');
+        checkoutButton.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Proszę podać adres email');
+                return;
+            }
+            
+            // Wywołaj swój endpoint do utworzenia sesji Stripe
+            fetch('/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    product: 'zdrowe-slodkosci-ebook'
+                }),
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(session) {
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function(result) {
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        });
+        
+        // Prosty licznik czasu - możesz dostosować wg potrzeb
+        function updateCountdown() {
+            const now = new Date();
+            const hours = 23 - now.getHours();
+            const minutes = 59 - now.getMinutes();
+            const seconds = 59 - now.getSeconds();
+            
+            document.getElementById('countdown').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
