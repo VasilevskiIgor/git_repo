@@ -201,3 +201,18 @@ footer p {
     font-size: 1.5rem;
   }
 }
+
+/* Footer styles to add to your existing CSS */
+.footer-links {
+  margin-bottom: 15px;
+}
+.footer-links a {
+  color: #ffffff;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+.footer-links a:hover {
+  color: #8bc34a;
+  text-decoration: underline;
+}
