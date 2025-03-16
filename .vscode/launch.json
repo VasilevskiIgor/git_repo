@@ -1,17 +1,17 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Launch Chrome with Live Server",
-        "type": "chrome",
-        "request": "launch",
-        "url": "http://localhost:5500", // Default Live Server URL
-        "webRoot": "${workspaceFolder}",
-        "sourceMaps": true,
-        "runtimeArgs": [
-          "--remote-debugging-port=9222"
-        ],
-        "preLaunchTask": "Start Live Server" // Optional: Automatically start Live Server
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Chrome with Live Server",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5500", // Default Live Server URL
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "runtimeArgs": [
+        "--remote-debugging-port=9222"
+      ],
+      "preLaunchTask": "live-server" // Ensure this matches the task name in tasks.json
+    }
+  ]
+}

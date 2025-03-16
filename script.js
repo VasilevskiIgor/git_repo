@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const stripe = require('stripe')('sk_test_YOUR_STRIPE_SECRET_KEY');
+//const stripe = require('stripe')('sk_test_51R2bRbFLIgmHACwJ6hnHv6MRKpYTxhweq3o3HVvPa620q88ivTy7nbQGoLJWHFLP3ojUEGICKPg33OA1yfCnQQRA00iYWexDa0');
 const path = require('path');
 const SibApiV3Sdk = require('sib-api-v3-sdk'); // Brevo/Sendinblue SDK
 
@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use('/webhook', bodyParser.raw({type: 'application/json'}));
-
+/*
 // Configure Brevo/Sendinblue API
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['xsmtpsib-b9c931cf615fa0e2f4c07360d7917eca109538ce121b6e5dfc31598865da2c9c-aB1pgzkA5SrNIV0C'];
@@ -56,34 +56,34 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 
 // Stripe webhook to listen for successful payments
-app.post('/webhook', async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const endpointSecret = 'whsec_YOUR_WEBHOOK_SECRET';
-  
-  let event;
-  
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (err) {
-    console.error(`Błąd webhooka: ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-  
-  // Handle successful payment
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
+app.post('/webhook', 
+  express.raw({type: 'application/json'}), // Important: Use express.raw instead of bodyParser
+  async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = 'whsec_YOUR_WEBHOOK_SECRET';
+    
+    let event;
     
     try {
-      // Send email with PDF attachment via Brevo
-      await sendEbookEmail(session.customer_email);
-      console.log(`Email sent to ${session.customer_email}`);
-    } catch (error) {
-      console.error('Error sending email:', error);
+      // Verify the webhook signature
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      console.error(`Webhook Error: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
     }
+    
+    // Handle successful payment
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      
+      // Send the ebook to the customer
+      await sendEbookEmail(session.customer_email, session.metadata.product);
+    }
+    
+    // Return success response
+    res.json({received: true});
   }
-  
-  res.json({received: true});
-});
+);
 
 // Function to send email with PDF attachment via Brevo
 async function sendEbookEmail(email) {
@@ -236,7 +236,7 @@ app.post('/webhook', async (req, res) => {
   
   res.json({received: true});
 });
-
+*/
 // 1. Use environment variables for sensitive information
 require('dotenv').config();
 
@@ -314,3 +314,4 @@ async function verifyUserForDownload(req, res, next) {
 app.get('/download/:token', verifyUserForDownload, (req, res) => {
   // Download logic here...
 });
+

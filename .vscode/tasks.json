@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "live-server", // This must match the "preLaunchTask" in launch.json
+        "type": "shell",
+        "command": "live-server", // Assumes Live Server is installed globally
+        "args": [
+          "--port=5500",
+          "--no-browser"
+        ],
+        "isBackground": true,
+        "problemMatcher": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
