@@ -15,7 +15,6 @@ app.use(
 )
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-
 const storeItems = new Map([
     [1, { priceInCents: 1000, name: 'Ebook healthy cake'}]
 ])
