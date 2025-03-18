@@ -568,46 +568,89 @@
 
     <script src="https://js.stripe.com/v3/"></script>
 <script>
-    const button = document.getElementById('button');
+       const checkoutButton = document.getElementById('checkout-button');
 
-    button.addEventListener('click', () => {
-        fetch('http://localhost:3000/create-checkout-session', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                items: [
-                    { id: 1, quantity: 1 },
-                ]
+        // Dodaję nasłuchiwanie kliknięcia przycisku
+        checkoutButton.addEventListener('click', () => {
+            // Pobierz adres e-mail z formularza
+            const email = document.getElementById('email').value;
+            
+            // Walidacja e-maila
+            if (!email || !email.includes('@')) {
+                alert('Wprowadź poprawny adres e-mail');
+                return;
+            }
+            
+            // Pokaż informację o przetwarzaniu
+            checkoutButton.disabled = true;
+            checkoutButton.textContent = 'Przetwarzanie...';
+            
+            console.log('Wysyłam żądanie płatności z danymi:', {
+                items: [{ id: 1, quantity: 1 }],
+                email: email
+            });
+            
+            // Wywołuję fetch z danymi
+            fetch('http://localhost:3000/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    items: [
+                        { id: 1, quantity: 1 },
+                    ],
+                    email: email // Przesyłam też e-mail do serwera
+                })
             })
-        })
-        .then(res => {
-            if (res.ok) return res.json();
-            return res.json().then(json => Promise.reject(json));
-        })
-        .then(({ url }) => {
-            window.location = url;
-        })
-        .catch(e => {
-            console.error(e.error);
+            .then(res => {
+                console.log('Otrzymałem odpowiedź o statusie:', res.status);
+                if (res.ok) return res.json();
+                
+                // Jeśli status nie jest ok, pobierz treść błędu i rzuć wyjątek
+                return res.json().then(json => {
+                    console.error('Błąd odpowiedzi:', json);
+                    throw new Error(json.error || 'Nieznany błąd');
+                });
+            })
+            .then(data => {
+                console.log('Dane do przekierowania:', data);
+                if (data.url) {
+                    // Przekierowanie do strony płatności
+                    window.location = data.url;
+                } else {
+                    throw new Error('Brak URL do przekierowania');
+                }
+            })
+            .catch(e => {
+                console.error('Wystąpił błąd:', e);
+                alert(`Wystąpił błąd podczas przetwarzania płatności: ${e.message}`);
+            })
+            .finally(() => {
+                // Przywróć przycisk do normalnego stanu
+                checkoutButton.disabled = false;
+                checkoutButton.textContent = 'KUP TERAZ';
+            });
         });
-    });
 
-    // Prosty licznik czasu - możesz dostosować wg potrzeb
-    function updateCountdown() {
-        const now = new Date();
-        const hours = 23 - now.getHours();
-        const minutes = 59 - now.getMinutes();
-        const seconds = 59 - now.getSeconds();
-        
-        document.getElementById('countdown').textContent = 
-            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+        // Prosty licznik czasu
+        function updateCountdown() {
+            const now = new Date();
+            const hours = 23 - now.getHours();
+            const minutes = 59 - now.getMinutes();
+            const seconds = 59 - now.getSeconds();
+            
+            document.getElementById('countdown').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-</script>
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        app.get('/test', (req, res) => {
+            res.json({ status: 'Server is working!' });
+        });
+    </script>
 </body>
 </html>
 

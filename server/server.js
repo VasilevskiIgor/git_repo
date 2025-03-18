@@ -1,52 +1,53 @@
 require('dotenv').config()
 
 const express = require('express')
-
 const app = express()
-
-app.use(express.json())
-
 const cors = require('cors')
 
-app.use(
-    cors({
-        origin: 'http://localhost:5500'
-    })
-)
+// Pozwól na dane w formacie JSON
+app.use(express.json())
+
+// Poprawiona konfiguracja CORS - akceptuje wszystkie źródła
+app.use(cors())
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const storeItems = new Map([
-    [1, { priceInCents: 1000, name: 'Ebook healthy cake'}]
+    [1, { priceInCents: 3900, name: 'Zdrowe Słodkości: 50 przepisów na dietetyczne ciasta'}]
 ])
 
+// Na serwerze
 app.post('/create-checkout-session', async (req, res) => {
-    try{
+    try {
+        // Uprość konfigurację - użyj tylko karty jako metody płatności
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card', 'blik'], // Add BLIK for Polish customers
+            payment_method_types: ['card'], // Tymczasowo usuń 'blik'
             mode: 'payment',
-            line_items: req.body.items.map(item => {
-                const storeItem = storeItems.get(item.id)
-                return {
+            line_items: [
+                {
                     price_data: {
                         currency: 'pln',
                         product_data: {
-                            name: storeItem.name,
+                            name: 'Zdrowe Słodkości: 50 przepisów na dietetyczne ciasta',
                         },
-                        unit_amount: storeItem.priceInCents,    
+                        unit_amount: 3900,    
                     },
-                    quantity: item.quantity,
+                    quantity: 1,
                 }
-            }),
-            success_url: `${process.env.CLIENT_URL}/success.html`,  
-            cancel_url: `${process.env.CLIENT_URL}/cancel.html`   
-        })
-        res.json({ url: session.url})
-    }catch {
-        res.status(500).json({ error: e.message})
+            ],
+            customer_email: req.body.email || undefined,
+            success_url: `${process.env.CLIENT_URL || 'http://localhost:5500'}/success.html`,  
+            cancel_url: `${process.env.CLIENT_URL || 'http://localhost:5500'}/cancel.html`   
+        });
+        
+        console.log('Session created:', session.id);
+        res.json({ url: session.url });
+    } catch (e) {
+        console.error('Error creating checkout session:', e);
+        res.status(500).json({ error: e.message });
     }
-
-})
+});
 
 app.listen(3000, () => {
     console.log('Server is listening on port 3000')
 })
+
