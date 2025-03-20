@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dziękujemy za zakup! | Zdrowe Słodkości</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8bc34a;
+            --primary-dark: #689f38;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .success-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        p {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .steps {
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .step {
+            background-color: #f0f7e6;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .step-number {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .session-id {
+            font-size: 12px;
+            color: #999;
+            margin-top: 40px;
+        }
+        
+        footer {
+            background-color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        @media (max-width: 768px) {
+            .success-card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .success-icon {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Zdrowe Słodkości</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <h1>Dziękujemy za zakup!</h1>
+            
+            <p>Twoja płatność została zrealizowana pomyślnie.</p>
+            <p>Za chwilę otrzymasz email z linkiem do pobrania eBooka.</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <span class="step-number">1.</span>
+                    Sprawdź swoją skrzynkę email (zajrzyj też do folderu SPAM).
+                </div>
+                <div class="step">
+                    <span class="step-number">2.</span>
+                    Otwórz wiadomość "🍰 Twoje Zdrowe Słodkości są gotowe do pobrania!".
+                </div>
+                <div class="step">
+                    <span class="step-number">3.</span>
+                    Kliknij przycisk "Pobierz eBook" aby pobrać Twój egzemplarz.
+                </div>
+            </div>
+            
+            <p>Nie otrzymałeś(aś) wiadomości? Sprawdź folder SPAM lub skontaktuj się z nami.</p>
+            
+            <a href="index.html" class="btn">Powrót do strony głównej</a>
+            
+            <div class="session-id" id="session-id-info">
+                Identyfikator zamówienia: <span id="session-id"></span>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Zdrowe Słodkości. Wszystkie prawa zastrzeżone.</p>
+    </footer>
+    
+    <script>
+        // Pobierz identyfikator sesji z URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            
+            if (sessionId) {
+                document.getElementById('session-id').textContent = sessionId;
+            } else {
+                document.getElementById('session-id-info').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
