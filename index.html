@@ -532,7 +532,7 @@
                 </div>
             </div>
 
-            <div class="right-column">
+       <div class="right-column">
                 <h2>Zdobądź dostęp teraz</h2>
                 <div class="price-container">
                     <div class="discount-badge">-50%</div>
@@ -545,7 +545,7 @@
                         <label for="email">Adres e-mail</label>
                         <input type="email" id="email" name="email" placeholder="Twój adres e-mail" required>
                     </div>
-                    <button type="button" id="checkout-button" class="btn">KUP TERAZ</button>
+                    <button type="submit" id="checkout-button" class="btn">KUP TERAZ</button>
                 </form>
                 <div class="secure-payment">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -566,71 +566,60 @@
         </div>
     </div>
 
+    <!-- Skrypt Stripe i obsługa formularza -->
     <script src="https://js.stripe.com/v3/"></script>
-<script>
-       const checkoutButton = document.getElementById('checkout-button');
-
-        // Dodaję nasłuchiwanie kliknięcia przycisku
-        checkoutButton.addEventListener('click', () => {
-            // Pobierz adres e-mail z formularza
-            const email = document.getElementById('email').value;
+    <script>
+        // Pobieranie elementów formularza
+        const form = document.getElementById('payment-form');
+        const emailInput = document.getElementById('email');
+        
+        // Obsługa formularza
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            // Walidacja e-maila
+            // Pobieranie adresu email
+            const email = emailInput.value;
+            
+            // Sprawdzanie czy email jest poprawny
             if (!email || !email.includes('@')) {
-                alert('Wprowadź poprawny adres e-mail');
+                alert('Proszę podać poprawny adres email.');
                 return;
             }
             
-            // Pokaż informację o przetwarzaniu
-            checkoutButton.disabled = true;
-            checkoutButton.textContent = 'Przetwarzanie...';
+            // Zmiana tekstu przycisku na "Przetwarzanie..."
+            const button = document.getElementById('checkout-button');
+            button.textContent = 'Przetwarzanie...';
+            button.disabled = true;
             
-            console.log('Wysyłam żądanie płatności z danymi:', {
-                items: [{ id: 1, quantity: 1 }],
-                email: email
-            });
-            
-            // Wywołuję fetch z danymi
-            fetch('http://localhost:3000/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    items: [
-                        { id: 1, quantity: 1 },
-                    ],
-                    email: email // Przesyłam też e-mail do serwera
-                })
-            })
-            .then(res => {
-                console.log('Otrzymałem odpowiedź o statusie:', res.status);
-                if (res.ok) return res.json();
-                
-                // Jeśli status nie jest ok, pobierz treść błędu i rzuć wyjątek
-                return res.json().then(json => {
-                    console.error('Błąd odpowiedzi:', json);
-                    throw new Error(json.error || 'Nieznany błąd');
+            try {
+                // Wysyłanie żądania do serwera w celu utworzenia sesji checkout
+                const response = await fetch('http://localhost:3000/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: [{ id: 1, quantity: 1 }],
+                        email: email
+                    })
                 });
-            })
-            .then(data => {
-                console.log('Dane do przekierowania:', data);
-                if (data.url) {
-                    // Przekierowanie do strony płatności
-                    window.location = data.url;
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Przekierowanie na stronę płatności Stripe
+                    window.location.href = data.url;
                 } else {
-                    throw new Error('Brak URL do przekierowania');
+                    // Obsługa błędu
+                    throw new Error(data.error || 'Wystąpił błąd podczas tworzenia sesji płatności.');
                 }
-            })
-            .catch(e => {
-                console.error('Wystąpił błąd:', e);
-                alert(`Wystąpił błąd podczas przetwarzania płatności: ${e.message}`);
-            })
-            .finally(() => {
-                // Przywróć przycisk do normalnego stanu
-                checkoutButton.disabled = false;
-                checkoutButton.textContent = 'KUP TERAZ';
-            });
+            } catch (error) {
+                console.error('Błąd:', error);
+                alert('Wystąpił błąd: ' + error.message);
+                // Przywracanie tekstu przycisku
+                button.textContent = 'KUP TERAZ';
+                button.disabled = false;
+            }
         });
 
         // Prosty licznik czasu
@@ -646,15 +635,9 @@
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
-
-        app.get('/test', (req, res) => {
-            res.json({ status: 'Server is working!' });
-        });
     </script>
-</body>
-</html>
 
-<footer>
+    <footer>
     <div class="container">
         <div class="footer-links">
             <a href="/rodo-template.html">RODO</a> | 
@@ -664,3 +647,5 @@
         <p>&copy; 2025 Zdrowe Słodkości. Wszelkie prawa zastrzeżone.</p>
     </div>
 </footer>
+</body>
+</html>
