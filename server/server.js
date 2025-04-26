@@ -65,7 +65,9 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // Połączenie z MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zdrowe-slodkosci').then(() => {
+require('dotenv').config();
+
+mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log('Połączono z MongoDB');
 }).catch(err => {
     console.error('Błąd połączenia z MongoDB:', err);
