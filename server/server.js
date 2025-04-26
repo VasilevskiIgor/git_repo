@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -12,20 +11,28 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const winston = require('winston');
 const rateLimit = require('express-rate-limit');
+const { sendEbookEmail } = require("./emailService");
+console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware configuration for Stripe webhooks
+// This needs to be before any bodyParser middleware to handle raw data for Stripe
+app.use((req, res, next) => {
+    if (req.originalUrl === '/webhook') {
+        express.raw({ type: 'application/json' })(req, res, next);
+    } else {
+        bodyParser.json()(req, res, next);
+    }
+});
+
+// Standard middleware
 app.use(express.static('public'));
-app.use(bodyParser.json());
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5500'
 }));
 app.use(helmet());
-
-// Obsługa webhooków Stripe - używamy express.raw zamiast bodyParser.json()
-app.use('/webhook', express.raw({ type: 'application/json' }));
 
 // Konfiguracja logów
 const logger = winston.createLogger({
@@ -74,6 +81,11 @@ const customerSchema = new mongoose.Schema({
     downloadCount: { type: Number, default: 0 }
 });
 
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Funkcja wysyłająca eBooka przez Resend
+
 const Customer = mongoose.model('Customer', customerSchema);
 
 // Tabela produktów
@@ -112,114 +124,109 @@ app.post('/create-checkout-session', async (req, res) => {
         });
 
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card', 'blik'], // Dodaj BLIK dla klientów z Polski
+            payment_method_types: ['card', 'blik'], 
             mode: 'payment',
             line_items: sessionItems,
             success_url: `${process.env.CLIENT_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/cancel.html`,
+            cancel_url: `${process.env.CLIENT_URL}/index.html`,
             customer_email: email,
             metadata: {
                 product: 'ebook-zdrowe-slodkosci'
             }
         });
 
+        app.get('/api/customers', async (req, res) => {
+            if (process.env.NODE_ENV !== 'production') {
+              try {
+                const customers = await Customer.find().select('email purchaseDate downloadCount');
+                res.json(customers);
+              } catch (error) {
+                res.status(500).json({ error: error.message });
+              }
+            } else {
+              res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
+            }
+          });
+
         res.json({ url: session.url });
+    
     } catch (error) {
         logger.error('Błąd w tworzeniu sesji płatności:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-
-// Endpoint do obsługi webhooków Stripe
-// Obsługa webhooków - używaj express.raw dla webhooków Stripe
-app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
-    const sig = req.headers['stripe-signature'];
+app.post('/webhook', express.raw({ type: "application/json" }), async (req, res) => {
+    console.log("🔹 Otrzymano webhook Stripe!");
+   
+    const sig = req.headers["stripe-signature"];
     let event;
-  
+
     try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+        console.log("✅ Webhook zweryfikowany poprawnie");
     } catch (err) {
-      console.log(`Webhook Error: ${err.message}`);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+        console.error("❌ Błąd weryfikacji webhooka:", err.message);
+        return res.status(400).send(`Webhook error: ${err.message}`);
     }
-  
-    // Obsłuż różne typy wydarzeń
-    switch (event.type) {
-      case 'checkout.session.completed':
+
+    if (event.type === "checkout.session.completed") {
+        console.log("✅ Płatność zakończona, przetwarzanie eBooka...");
         const session = event.data.object;
-        // Tutaj możesz dodać kod do obsługi pomyślnie zakończonej sesji płatności
-        console.log('Płatność zakończona pomyślnie!', session);
-        break;
-      default:
-        console.log(`Nieobsługiwany typ wydarzenia: ${event.type}`);
-    }
-  
-    res.status(200).send();
-  });
+        console.log("📧 Email kupującego:", session.customer_email);
 
-  app.use((req, res, next) => {
-    if (req.originalUrl === '/webhook') {
-      next();
+        try {
+            // Check if customer already exists
+            let customer = await Customer.findOne({ email: session.customer_email });
+            
+            if (!customer) {
+                // Create new customer
+                customer = new Customer({
+                    email: session.customer_email,
+                    stripeSessionId: session.id,
+                    product: session.metadata.product || 'ebook-zdrowe-slodkosci'
+                });
+                
+                await customer.save();
+                console.log("✅ Nowy klient zapisany w bazie danych:", session.customer_email);
+            } else {
+                console.log("ℹ️ Klient już istnieje w bazie danych:", session.customer_email);
+            }
+
+            console.log("🔄 Próba wywołania sendEbookEmail...");
+            await sendEbookEmail(session.customer_email);
+            console.log("✅ Funkcja sendEbookEmail wywołana pomyślnie!");
+        } catch (error) {
+            console.error("❌ Błąd w sendEbookEmail lub zapisie do bazy danych:", error);
+            logger.error('Błąd przetwarzania płatności:', {
+                error: error.message,
+                email: session.customer_email,
+                sessionId: session.id
+            });
+        }
+    }
+
+    res.status(200).json({ received: true });
+});
+
+// Endpoint do wyświetlania danych klientów (TYLKO DO CELÓW DEVELOPERSKICH)
+app.get('/api/customers', async (req, res) => {
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const customers = await Customer.find().select('email purchaseDate downloadCount');
+        res.json(customers);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     } else {
-      express.json()(req, res, next);
+      res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
     }
   });
-
-
 
 // Funkcja do generowania bezpiecznego linku do pobierania
 function generateDownloadLink(email) {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
     return `${process.env.CLIENT_URL}/download/${token}`;
-}
-
-// Funkcja do wysyłania emaila z eBookiem
-async function sendEbookEmail(email, downloadLink) {
-    try {
-        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-        
-        sendSmtpEmail.subject = '🍰 Twoje "Zdrowe Słodkości" są gotowe do pobrania!';
-        sendSmtpEmail.htmlContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h1 style="color: #8bc34a; text-align: center;">Dziękujemy za zakup!</h1>
-                <p>Witaj,</p>
-                <p>Dziękujemy za zakup eBooka "Zdrowe Słodkości". Twój PDF jest dostępny do pobrania poniżej.</p>
-                <p>Możesz pobrać go, klikając poniższy przycisk:</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${downloadLink}" style="background-color: #8bc34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Pobierz eBook</a>
-                </div>
-                <p>Życzymy wielu wspaniałych wypieków!</p>
-                <p>Zespół Zdrowe Słodkości</p>
-            </div>
-        `;
-        sendSmtpEmail.sender = { name: 'Zdrowe Słodkości', email: process.env.SENDER_EMAIL };
-        sendSmtpEmail.to = [{ email: email }];
-        
-        // Dodaj załącznik PDF, jeśli chcesz wysłać go bezpośrednio w emailu
-        // Uwaga: Niektóre systemy pocztowe mogą blokować duże załączniki
-        
-        if (fs.existsSync(path.join(__dirname, 'ebooks/zdrowe-slodkosci.pdf'))) {
-            sendSmtpEmail.attachment = [
-                {
-                    content: Buffer.from(fs.readFileSync(path.join(__dirname, 'ebooks/zdrowe-slodkosci.pdf'))).toString('base64'),
-                    name: 'Zdrowe-Slodkosci-ebook.pdf'
-                }
-            ];
-        }
-        
-        
-        const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        logger.info('Email wysłany pomyślnie', { email });
-        return result;
-    } catch (error) {
-        logger.error('Błąd wysyłania emaila:', error);
-        throw error;
-    }
 }
 
 // Funkcja do weryfikacji użytkownika przed pobraniem
@@ -278,42 +285,6 @@ app.get('/download/:token', downloadLimiter, verifyUserForDownload, (req, res) =
         res.status(500).send('Wystąpił błąd podczas pobierania pliku');
     }
 });
-
-app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
-    // Weryfikacja webhooków i inne operacje...
-  
-    // Obsługa udanej płatności
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      
-      try {
-        // Zapisz klienta w bazie danych
-        const customer = new Customer({
-          email: session.customer_email,
-          stripeSessionId: session.id,
-          product: session.metadata.product
-        });
-        
-        await customer.save();
-        
-        // Wygeneruj bezpieczny link do pobrania
-        const downloadLink = generateDownloadLink(session.customer_email);
-        
-        // Wyślij email z linkiem do pobrania
-        await sendEbookEmail(session.customer_email, downloadLink);
-        
-        logger.info('Zakup przetworzony pomyślnie', { 
-          email: session.customer_email, 
-          sessionId: session.id 
-        });
-      } catch (error) {
-        logger.error('Błąd przetwarzania płatności:', error);
-      }
-    }
-    
-    // Zwróć odpowiedź sukcesu
-    res.json({ received: true });
-  });
 
 // Middleware do obsługi błędów
 app.use((err, req, res, next) => {

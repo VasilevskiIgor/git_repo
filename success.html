@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dziękujemy za zakup! | Zdrowe Słodkości</title>
+    <title>Dziękujemy za zakup! | Zdrowe ciasta</title>
+    <link rel="icon" href="images/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="images/apple-touch-logo.png">
     <style>
         :root {
             --primary-color: #8bc34a;
@@ -146,6 +150,36 @@
             background-color: var(--primary-dark);
         }
         
+        .social-links {
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-dark);
+        }
+        
+        .contact-info {
+            margin-top: 10px;
+        }
+        
+        .contact-info a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .contact-info a:hover {
+            color: var(--primary-dark);
+        }
+        
         @media (max-width: 768px) {
             .success-card {
                 padding: 25px;
@@ -206,6 +240,17 @@
     
     <footer>
         <p>&copy; 2025 Zdrowe Słodkości. Wszystkie prawa zastrzeżone.</p>
+        <div class="footer-links">
+            <a href="/rodo.html">RODO</a> | 
+            <a href="/politykaprywatnosci.html">Polityka Prywatności</a> | 
+            <a href="/regulamin.html">Regulamin</a>
+        </div>
+        <div class="social-links">
+            <a href="https://instagram.com/healthycakes.pl" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+        <div class="contact-info">
+            <p>Kontakt: <a href="mailto:kontakt@healthycakes.pl">kontakt@healthycake.pl</a></p>
+        </div>
     </footer>
     
     <script>
