@@ -303,6 +303,10 @@ app.use((err, req, res, next) => {
     res.status(500).send('Wystąpił błąd serwera');
 });
 
+app.get('/', (req, res) => {
+    res.send('Healthy Cakes API is running 🎂');
+  });
+  
 // Uruchomienie serwera
 app.listen(PORT, () => {
     console.log(`Serwer uruchomiony na porcie ${PORT}`);
