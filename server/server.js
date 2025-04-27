@@ -15,7 +15,7 @@ const { sendEbookEmail } = require("./emailService");
 console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; 
 
 // Middleware configuration for Stripe webhooks
 // This needs to be before any bodyParser middleware to handle raw data for Stripe
@@ -29,8 +29,6 @@ app.use((req, res, next) => {
 
 // Middleware dla plików statycznych
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Routing głównej strony
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -40,6 +38,10 @@ app.listen(PORT, () => {
     console.log(`Serwer uruchomiony na porcie ${PORT}`);
     console.log(`Otwórz przeglądarkę pod adresem: http://localhost:${PORT}`);
 });
+
+console.log('Ścieżka __dirname:', __dirname);
+console.log('Ścieżka do public:', path.join(__dirname, 'public'));
+console.log('Używany port:', process.env.PORT);
 
 app.use(express.static('public'));
 app.use(cors({
