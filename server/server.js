@@ -28,11 +28,11 @@ app.use((req, res, next) => {
 });
 
 // Middleware dla plików statycznych
-app.use(express.static(path.join(__dirname, 'vscode', 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routing głównej strony
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'vscode', 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Uruchomienie serwera
