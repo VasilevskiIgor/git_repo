@@ -138,8 +138,8 @@ app.post('/create-checkout-session', async (req, res) => {
             payment_method_types: ['card', 'blik'], 
             mode: 'payment',
             line_items: sessionItems,
-            success_url: `${process.env.CLIENT_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/index.html`,
+            success_url: `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/index.html`,
             customer_email: email,
             metadata: {
                 product: 'ebook-zdrowe-slodkosci'
@@ -223,8 +223,8 @@ app.post('/webhook', express.raw({ type: "application/json" }), async (req, res)
 // Funkcja do generowania bezpiecznego linku do pobierania
 function generateDownloadLink(email) {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
-    return `${process.env.CLIENT_URL}/download/${token}`;
-}
+    return `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/download/${token}`;
+  }
 
 // Funkcja do weryfikacji użytkownika przed pobraniem
 async function verifyUserForDownload(req, res, next) {
@@ -309,9 +309,5 @@ app.get('/', (req, res) => {
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
-    console.log(`Ścieżka __dirname: ${__dirname}`);
-    console.log(`Ścieżka do public: ${path.join(__dirname, 'public')}`);
-    console.log(`Używany port: ${PORT}`);
-    console.log(`Serwer uruchomiony na porcie ${PORT}`);
-    console.log(`Otwórz przeglądarkę pod adresem: http://localhost:${PORT}`);
+    console.log(`Używany port: ${PORT}`); 
 });

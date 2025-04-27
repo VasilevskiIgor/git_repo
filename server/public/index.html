@@ -598,7 +598,7 @@
             
             try {
                 // Wysyłanie żądania do serwera w celu utworzenia sesji checkout
-                const response = await fetch('http://localhost:3000/create-checkout-session', {
+                const response = await fetch('/create-checkout-session', { //  const response = await fetch('http://localhost:3000/create-checkout-session', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
