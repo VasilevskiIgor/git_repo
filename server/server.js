@@ -27,18 +27,26 @@ app.use((req, res, next) => {
     }
 });
 
-// Standard middleware
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware dla plików statycznych
+app.use(express.static(path.join(__dirname, 'vscode', 'public')));
 
+// Routing głównej strony
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'vscode', 'public', 'index.html'));
+});
 
-/*
+// Uruchomienie serwera
+app.listen(PORT, () => {
+    console.log(`Serwer uruchomiony na porcie ${PORT}`);
+    console.log(`Otwórz przeglądarkę pod adresem: http://localhost:${PORT}`);
+});
+
 app.use(express.static('public'));
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5500'
 }));
 app.use(helmet());
-*/
+
 
 // Konfiguracja logów
 const logger = winston.createLogger({
@@ -310,9 +318,9 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Healthy Cakes API is running 🎂');
-  });
-  
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
 // Uruchomienie serwera
 app.listen(PORT, () => {
     console.log(`Serwer uruchomiony na porcie ${PORT}`);
