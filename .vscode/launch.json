@@ -5,7 +5,7 @@
       "name": "Launch Chrome with Live Server",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:5500", // Default Live Server URL
+      "url": "http://localhost:5502", // Default Live Server URL
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
       "runtimeArgs": [

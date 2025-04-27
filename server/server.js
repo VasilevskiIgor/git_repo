@@ -15,10 +15,9 @@ const { sendEbookEmail } = require("./emailService");
 console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 
 const app = express();
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3001; // Zmieniamy domyślny port na 3001
 
-// Middleware configuration for Stripe webhooks
-// This needs to be before any bodyParser middleware to handle raw data for Stripe
+// Middleware configuration
 app.use((req, res, next) => {
     if (req.originalUrl === '/webhook') {
         express.raw({ type: 'application/json' })(req, res, next);
@@ -27,27 +26,21 @@ app.use((req, res, next) => {
     }
 });
 
-// Middleware dla plików statycznych
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.use((req, res, next) => {
+    console.log(`Żądanie: ${req.method} ${req.url}`);
+    console.log('Ścieżka do index.html:', path.join(__dirname, 'public', 'index.html'));
+    next();
+  });
 
-// Uruchomienie serwera
-app.listen(PORT, () => {
-    console.log(`Serwer uruchomiony na porcie ${PORT}`);
-    console.log(`Otwórz przeglądarkę pod adresem: http://localhost:${PORT}`);
-});
-
-console.log('Ścieżka __dirname:', __dirname);
-console.log('Ścieżka do public:', path.join(__dirname, 'public'));
-console.log('Używany port:', process.env.PORT);
-
-app.use(express.static('public'));
+// Static files and core middleware
+app.use(express.static(path.join(__dirname, 'public'), {
+    index: 'index.html' // Wymuszaj serwowanie index.html
+  }));
+app.use(express.static(path.join(__dirname, 'ebooks'))); // Jeśli chcesz udostępnić ebooks
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5500'
-}));
-app.use(helmet());
+    origin: process.env.CLIENT_URL || `http://localhost:${PORT}`, // Używa tego samego portu co serwer
+    optionsSuccessStatus: 200
+  }));
 
 
 // Konfiguracja logów
@@ -227,20 +220,6 @@ app.post('/webhook', express.raw({ type: "application/json" }), async (req, res)
     res.status(200).json({ received: true });
 });
 
-// Endpoint do wyświetlania danych klientów (TYLKO DO CELÓW DEVELOPERSKICH)
-app.get('/api/customers', async (req, res) => {
-    if (process.env.NODE_ENV !== 'production') {
-      try {
-        const customers = await Customer.find().select('email purchaseDate downloadCount');
-        res.json(customers);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    } else {
-      res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
-    }
-  });
-
 // Funkcja do generowania bezpiecznego linku do pobierania
 function generateDownloadLink(email) {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -320,10 +299,19 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
+    res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+      if (err) {
+        console.error('Błąd przy wysyłaniu index.html:', err);
+        res.status(500).send('Błąd serwera');
+      }
+    });
+  });
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
+    console.log(`Ścieżka __dirname: ${__dirname}`);
+    console.log(`Ścieżka do public: ${path.join(__dirname, 'public')}`);
+    console.log(`Używany port: ${PORT}`);
     console.log(`Serwer uruchomiony na porcie ${PORT}`);
+    console.log(`Otwórz przeglądarkę pod adresem: http://localhost:${PORT}`);
 });
