@@ -28,11 +28,17 @@ app.use((req, res, next) => {
 });
 
 // Standard middleware
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+/*
 app.use(express.static('public'));
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5500'
 }));
 app.use(helmet());
+*/
 
 // Konfiguracja logów
 const logger = winston.createLogger({
