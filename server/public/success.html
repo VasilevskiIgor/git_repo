@@ -34,6 +34,7 @@
         }
         
         .container {
+            width: 100%;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -44,6 +45,7 @@
             background-color: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 15px 0;
+            width: 100%;
         }
         
         .header-content {
@@ -68,6 +70,7 @@
             padding: 40px;
             margin-top: 40px;
             text-align: center;
+            width: 100%;
         }
         
         .success-icon {
@@ -93,6 +96,7 @@
             font-size: 32px;
             margin-bottom: 20px;
             color: var(--primary-color);
+            word-wrap: break-word;
         }
         
         p {
@@ -124,14 +128,16 @@
             font-size: 12px;
             color: #999;
             margin-top: 40px;
+            word-break: break-all;
         }
         
         footer {
             background-color: white;
-            padding: 20px 0;
+            padding: 20px 10px;
             text-align: center;
             margin-top: 40px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            width: 100%;
         }
         
         .btn {
@@ -148,6 +154,16 @@
         
         .btn:hover {
             background-color: var(--primary-dark);
+        }
+        
+        .footer-links {
+            margin: 10px 0;
+        }
+        
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 5px;
         }
         
         .social-links {
@@ -174,15 +190,18 @@
             color: var(--primary-color);
             text-decoration: none;
             transition: color 0.3s;
+            word-wrap: break-word;
         }
         
         .contact-info a:hover {
             color: var(--primary-dark);
         }
         
+        /* Ulepszone zapytania medialne dla lepszej responsywności */
         @media (max-width: 768px) {
             .success-card {
-                padding: 25px;
+                padding: 25px 15px;
+                margin-top: 20px;
             }
             
             h1 {
@@ -191,6 +210,48 @@
             
             .success-icon {
                 font-size: 60px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .success-card {
+                padding: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .success-icon {
+                font-size: 50px;
+                margin-bottom: 20px;
+            }
+            
+            .step {
+                padding: 12px 15px;
+            }
+            
+            .footer-links a {
+                display: block;
+                margin: 5px 0;
+            }
+            
+            .social-links a {
+                margin: 0 5px;
             }
         }
     </style>
