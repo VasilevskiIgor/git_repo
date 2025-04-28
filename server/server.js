@@ -133,13 +133,13 @@ app.post('/create-checkout-session', async (req, res) => {
                 quantity: item.quantity,
             }
         });
-
+         //http://localhost:${PORT}
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card', 'blik'], 
             mode: 'payment',
             line_items: sessionItems,
-            success_url: `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/index.html`,
+            success_url: `${process.env.CLIENT_URL || `https://healthycakes-pl-app.onrender.com`}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL || `https://healthycakes-pl-app.onrender.com`}/index.html`,
             customer_email: email,
             metadata: {
                 product: 'ebook-zdrowe-slodkosci'
