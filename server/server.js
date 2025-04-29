@@ -17,6 +17,59 @@ console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 const app = express();
 const PORT = process.env.PORT || 3001; // Zmieniamy domyślny port na 3001
 
+app.post('/webhook', express.raw({ type: "application/json" }), async (req, res) => {
+    console.log("🔹 Otrzymano webhook Stripe!");
+   
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+        console.log("✅ Webhook zweryfikowany poprawnie");
+    } catch (err) {
+        console.error("❌ Błąd weryfikacji webhooka:", err.message);
+        return res.status(400).send(`Webhook error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+        console.log("✅ Płatność zakończona, przetwarzanie eBooka...");
+        const session = event.data.object;
+        console.log("📧 Email kupującego:", session.customer_email);
+
+        try {
+            // Check if customer already exists
+            let customer = await Customer.findOne({ email: session.customer_email });
+            
+            if (!customer) {
+                // Create new customer
+                customer = new Customer({
+                    email: session.customer_email,
+                    stripeSessionId: session.id,
+                    product: session.metadata.product || 'ebook-zdrowe-slodkosci'
+                });
+                
+                await customer.save();
+                console.log("✅ Nowy klient zapisany w bazie danych:", session.customer_email);
+            } else {
+                console.log("ℹ️ Klient już istnieje w bazie danych:", session.customer_email);
+            }
+
+            console.log("🔄 Próba wywołania sendEbookEmail...");
+            await sendEbookEmail(session.customer_email);
+            console.log("✅ Funkcja sendEbookEmail wywołana pomyślnie!");
+        } catch (error) {
+            console.error("❌ Błąd w sendEbookEmail lub zapisie do bazy danych:", error);
+            logger.error('Błąd przetwarzania płatności:', {
+                error: error.message,
+                email: session.customer_email,
+                sessionId: session.id
+            });
+        }
+    }
+
+    res.status(200).json({ received: true });
+});
+
 // Middleware configuration
 app.use((req, res, next) => {
     if (req.originalUrl === '/webhook') {
@@ -26,22 +79,22 @@ app.use((req, res, next) => {
     }
 });
 
-app.use((req, res, next) => {
-    console.log(`Żądanie: ${req.method} ${req.url}`);
-    console.log('Ścieżka do index.html:', path.join(__dirname, 'public', 'index.html'));
-    next();
-  });
-
 // Static files and core middleware
 app.use(express.static(path.join(__dirname, 'public'), {
     index: 'index.html' // Wymuszaj serwowanie index.html
   }));
-app.use(express.static(path.join(__dirname, 'ebooks'))); // Jeśli chcesz udostępnić ebooks
+
+app.use((req, res, next) => {
+    console.log(`Żądanie: ${req.method} ${req.url}`);
+    next();
+  });
+
 app.use(cors({
     origin: process.env.CLIENT_URL || `http://localhost:${PORT}`, // Używa tego samego portu co serwer
     optionsSuccessStatus: 200
   }));
 
+app.use(express.static(path.join(__dirname, 'ebooks'))); // Jeśli chcesz udostępnić ebooks
 
 // Konfiguracja logów
 const logger = winston.createLogger({
@@ -66,12 +119,6 @@ const downloadLimiter = rateLimit({
     max: 5, // 5 prób na godzinę
     message: 'Zbyt wiele prób pobrania. Spróbuj ponownie później.'
 });
-
-// Konfiguracja Brevo/Sendinblue API
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
-const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // Połączenie z MongoDB
 require('dotenv').config();
@@ -165,59 +212,6 @@ app.post('/create-checkout-session', async (req, res) => {
         logger.error('Błąd w tworzeniu sesji płatności:', error);
         res.status(500).json({ error: error.message });
     }
-});
-
-app.post('/webhook', express.raw({ type: "application/json" }), async (req, res) => {
-    console.log("🔹 Otrzymano webhook Stripe!");
-   
-    const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-        console.log("✅ Webhook zweryfikowany poprawnie");
-    } catch (err) {
-        console.error("❌ Błąd weryfikacji webhooka:", err.message);
-        return res.status(400).send(`Webhook error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-        console.log("✅ Płatność zakończona, przetwarzanie eBooka...");
-        const session = event.data.object;
-        console.log("📧 Email kupującego:", session.customer_email);
-
-        try {
-            // Check if customer already exists
-            let customer = await Customer.findOne({ email: session.customer_email });
-            
-            if (!customer) {
-                // Create new customer
-                customer = new Customer({
-                    email: session.customer_email,
-                    stripeSessionId: session.id,
-                    product: session.metadata.product || 'ebook-zdrowe-slodkosci'
-                });
-                
-                await customer.save();
-                console.log("✅ Nowy klient zapisany w bazie danych:", session.customer_email);
-            } else {
-                console.log("ℹ️ Klient już istnieje w bazie danych:", session.customer_email);
-            }
-
-            console.log("🔄 Próba wywołania sendEbookEmail...");
-            await sendEbookEmail(session.customer_email);
-            console.log("✅ Funkcja sendEbookEmail wywołana pomyślnie!");
-        } catch (error) {
-            console.error("❌ Błąd w sendEbookEmail lub zapisie do bazy danych:", error);
-            logger.error('Błąd przetwarzania płatności:', {
-                error: error.message,
-                email: session.customer_email,
-                sessionId: session.id
-            });
-        }
-    }
-
-    res.status(200).json({ received: true });
 });
 
 // Funkcja do generowania bezpiecznego linku do pobierania
