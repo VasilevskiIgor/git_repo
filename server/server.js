@@ -70,6 +70,10 @@ app.post('/webhook', express.raw({ type: "application/json" }), async (req, res)
     res.status(200).json({ received: true });
 });
 
+app.use(express.json());
+app.use(helmet());
+app.use(express.urlencoded({ extended: true }));
+/*
 // Middleware configuration
 app.use((req, res, next) => {
     if (req.originalUrl === '/webhook') {
@@ -78,7 +82,7 @@ app.use((req, res, next) => {
         bodyParser.json()(req, res, next);
     }
 });
-
+*/
 // Static files and core middleware
 app.use(express.static(path.join(__dirname, 'public'), {
     index: 'index.html' // Wymuszaj serwowanie index.html
@@ -119,9 +123,6 @@ const downloadLimiter = rateLimit({
     max: 5, // 5 prób na godzinę
     message: 'Zbyt wiele prób pobrania. Spróbuj ponownie później.'
 });
-
-// Połączenie z MongoDB
-require('dotenv').config();
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log('Połączono z MongoDB');
@@ -191,21 +192,7 @@ app.post('/create-checkout-session', async (req, res) => {
             metadata: {
                 product: 'ebook-zdrowe-slodkosci'
             }
-        });
-
-        app.get('/api/customers', async (req, res) => {
-            if (process.env.NODE_ENV !== 'production') {
-              try {
-                const customers = await Customer.find().select('email purchaseDate downloadCount');
-                res.json(customers);
-              } catch (error) {
-                res.status(500).json({ error: error.message });
-              }
-            } else {
-              res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
-            }
-          });
-
+        });      
         res.json({ url: session.url });
     
     } catch (error) {
@@ -213,6 +200,19 @@ app.post('/create-checkout-session', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+app.get('/api/customers', async (req, res) => {
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const customers = await Customer.find().select('email purchaseDate downloadCount');
+        res.json(customers);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    } else {
+      res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
+    }
+  });
 
 // Funkcja do generowania bezpiecznego linku do pobierania
 function generateDownloadLink(email) {
