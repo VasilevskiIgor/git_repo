@@ -12,12 +12,18 @@ const helmet = require('helmet');
 const winston = require('winston');
 const rateLimit = require('express-rate-limit');
 const { sendEbookEmail } = require("./emailService");
+const { Resend } = require('resend');
 console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 
 const app = express();
-const PORT = process.env.PORT || 3001; // Zmieniamy domyślny port na 3001
+const PORT = process.env.PORT || 3001;
 
-app.post('/webhook', express.raw({ type: "application/json" }), async (req, res) => {
+// IMPORTANT: Configure route-specific middleware
+// The webhook route must come BEFORE any express.json() middleware
+// This is critical for Stripe webhook signature verification
+
+// Webhook endpoint with raw body parser
+app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
     console.log("🔹 Otrzymano webhook Stripe!");
    
     const sig = req.headers["stripe-signature"];
@@ -70,34 +76,26 @@ app.post('/webhook', express.raw({ type: "application/json" }), async (req, res)
     res.status(200).json({ received: true });
 });
 
+// AFTER the webhook route, apply JSON parsing middleware for all other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware configuration
-app.use((req, res, next) => {
-    if (req.originalUrl === '/webhook') {
-        express.raw({ type: 'application/json' })(req, res, next);
-    } else {
-        bodyParser.json()(req, res, next);
-    }
-});
-
 // Static files and core middleware
 app.use(express.static(path.join(__dirname, 'public'), {
-    index: 'index.html' // Wymuszaj serwowanie index.html
-  }));
+    index: 'index.html'
+}));
 
 app.use((req, res, next) => {
     console.log(`Żądanie: ${req.method} ${req.url}`);
     next();
-  });
+});
 
 app.use(cors({
-    origin: process.env.CLIENT_URL || `http://localhost:${PORT}`, // Używa tego samego portu co serwer
+    origin: process.env.CLIENT_URL || `http://localhost:${PORT}`,
     optionsSuccessStatus: 200
-  }));
+}));
 
-app.use(express.static(path.join(__dirname, 'ebooks'))); // Jeśli chcesz udostępnić ebooks
+app.use(express.static(path.join(__dirname, 'ebooks')));
 
 // Konfiguracja logów
 const logger = winston.createLogger({
@@ -124,8 +122,6 @@ const downloadLimiter = rateLimit({
 });
 
 // Połączenie z MongoDB
-require('dotenv').config();
-
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log('Połączono z MongoDB');
 }).catch(err => {
@@ -142,12 +138,9 @@ const customerSchema = new mongoose.Schema({
     downloadCount: { type: Number, default: 0 }
 });
 
-const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Funkcja wysyłająca eBooka przez Resend
-
 const Customer = mongoose.model('Customer', customerSchema);
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Tabela produktów
 const storeItems = new Map([
@@ -175,15 +168,13 @@ app.post('/create-checkout-session', async (req, res) => {
                     product_data: {
                         name: storeItem.name,
                         description: 'eBook z przepisami na niskokaloryczne ciasta i desery',
-                        // Dodaj obrazek produktu, jeśli dostępny
-                        // images: ['https://twoja-domena.pl/images/ebook-cover.jpg']
                     },
                     unit_amount: storeItem.priceInCents,
                 },
                 quantity: item.quantity,
             }
         });
-         //http://localhost:${PORT}
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card', 'blik'], 
             mode: 'payment',
@@ -196,19 +187,6 @@ app.post('/create-checkout-session', async (req, res) => {
             }
         });
 
-        app.get('/api/customers', async (req, res) => {
-            if (process.env.NODE_ENV !== 'production') {
-              try {
-                const customers = await Customer.find().select('email purchaseDate downloadCount');
-                res.json(customers);
-              } catch (error) {
-                res.status(500).json({ error: error.message });
-              }
-            } else {
-              res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
-            }
-          });
-
         res.json({ url: session.url });
     
     } catch (error) {
@@ -217,11 +195,24 @@ app.post('/create-checkout-session', async (req, res) => {
     }
 });
 
+app.get('/api/customers', async (req, res) => {
+    if (process.env.NODE_ENV !== 'production') {
+        try {
+            const customers = await Customer.find().select('email purchaseDate downloadCount');
+            res.json(customers);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    } else {
+        res.status(403).send('Dostęp zabroniony w środowisku produkcyjnym');
+    }
+});
+
 // Funkcja do generowania bezpiecznego linku do pobierania
 function generateDownloadLink(email) {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
     return `${process.env.CLIENT_URL || `http://localhost:${PORT}`}/download/${token}`;
-  }
+}
 
 // Funkcja do weryfikacji użytkownika przed pobraniem
 async function verifyUserForDownload(req, res, next) {
@@ -302,7 +293,7 @@ app.get('/', (req, res) => {
         res.status(500).send('Błąd serwera');
       }
     });
-  });
+});
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
