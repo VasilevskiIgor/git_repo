@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zdrowe Słodkości - Przepisy na dietetyczne ciasta bez wyrzutów sumienia</title>
-    <link rel="icon" href="/server/public/images/logo.png" type="image/png">
+    <link rel="icon" href="/images/logo.png" type="image/png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="/server/public/images/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="/server/public/images/logo.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/server/public/images/apple-touch-logo.png">
+    <link rel="icon" href="/images/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/images/apple-touch-logo.png">
     
     <style>
         body {
@@ -381,6 +381,71 @@
             font-weight: bold;
             color: #ff6b6b;
         }
+        /* Styl dla sekcji FAQ */
+        .faq-section {
+            background-color: white;
+            padding: 60px 0;
+            margin: 60px 0;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .faq-section h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .faq-section h2:after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #8bc34a;
+            margin: 15px auto;
+        }
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #e0e0e0;
+            padding-bottom: 20px;
+        }
+        .faq-question {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question:hover {
+            color: #8bc34a;
+        }
+        .faq-answer {
+            color: #555;
+            padding-top: 10px;
+        }
+        .faq-contact {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: 500;
+            color: #555;
+        }
+        .faq-contact a {
+            color: #8bc34a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .faq-contact a:hover {
+            text-decoration: underline;
+        }
+        .faq-icon {
+            color: #8bc34a;
+            margin-right: 10px;
+        }
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -473,22 +538,21 @@
                     <h3>Spis rozdziałów:</h3>
                     <ul>
                         <li>Podstawy pieczenia fit – zamienniki cukru, mąki i tłuszczu</li>
-                        <li>Ciasta czekoladowe i brownie – 10 przepisów poniżej 200 kcal</li>
-                        <li>Serniki i ciasta z owocami – 15 lekkich wariantów</li>
+                        <li>Ciasta czekoladowe i brownie – około 10 przepisów poniżej 200 kcal</li>
+                        <li>Serniki i ciasta z owocami – kilka wariantów</li>
                         <li>Muffiny i babeczki – szybkie przekąski do 150 kcal</li>
                         <li>Tarty i ciasta kruche – zdrowe wersje klasycznych wypieków</li>
                         <li>Desery bez pieczenia – idealne na upalne dni</li>
                         <li>Dodatki – zdrowe kremy, polewy i sosy</li>
                     </ul>
                 </div>
-
                 <div class="features">
                     <h2>Co jeszcze otrzymasz?</h2>
                     <div class="feature-grid">
                         <div class="feature-item">
-                            <div class="feature-icon">📋</div>
-                            <div class="feature-title">Lista zakupów na 2 tygodnie</div>
-                            <p>Gotowa lista zakupów, dzięki której łatwo zaplanujesz przygotowanie kilku przepisów w ciągu dwóch tygodni</p>
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-title">Pełna informacja o wartościach odżywczych</div>
+                            <p>Każdy przepis zawiera dokładne dane o kaloriach, białku, tłuszczach i węglowodanach, dzięki czemu łatwo dopasujesz ciasta do swojej diety</p>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">🔄</div>
@@ -572,6 +636,47 @@
             </div>
         </div>
     </div>
+     <!-- Nowa sekcja FAQ -->
+     <div class="faq-section">
+        <div class="container">
+            <h2>Często zadawane pytania</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fas fa-question-circle faq-icon"></i> Jak otrzymam ebooka po zakupie?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Po dokonaniu płatności, ebook zostanie automatycznie wysłany na podany adres email jako załącznik do pobrania. Dostęp do niego będziesz mieć natychmiast po potwierdzeniu transakcji.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fas fa-question-circle faq-icon"></i> Czy przepisy wymagają specjalnych składników?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nie, wszystkie przepisy zostały opracowane z myślą o łatwej dostępności składników. Wykorzystujemy produkty, które znajdziesz w każdym supermarkecie. Dodatkowo, w ebooku znajdziesz tabelę zamienników dla osób z alergiami lub na specjalnych dietach.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fas fa-question-circle faq-icon"></i> Czy mogę zwrócić ebooka?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Tak, oferujemy 14-dniową gwarancję zwrotu pieniędzy. Jeśli z jakiegokolwiek powodu nie będziesz zadowolony/a z zakupu, wyślij nam wiadomość email, a zwrócimy Ci pełną kwotę bez zadawania dodatkowych pytań.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fas fa-question-circle faq-icon"></i> Ile kalorii mają przepisy?</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Wszystkie przepisy zawarte w ebooku zostały starannie opracowane tak, aby zawierały mniej niż 200 kcal na porcję. Większość przepisów mieści się w przedziale 120-180 kcal, a niektóre nawet poniżej 100 kcal na porcję! Każdy przepis zawiera dokładne informacje o wartościach odżywczych (kalorie, białko, tłuszcze
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>       
 
     <!-- Skrypt Stripe i obsługa formularza -->
     <script src="https://js.stripe.com/v3/"></script>
