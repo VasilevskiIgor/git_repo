@@ -22,6 +22,13 @@ const PORT = process.env.PORT || 3001;
 // The webhook route must come BEFORE any express.json() middleware
 // This is critical for Stripe webhook signature verification
 
+//Refresh app
+setInterval(() => {
+    fetch('https://healthycakes-pl-app.onrender.com/')
+      .then(() => console.log('Ping sent'))
+      .catch(console.error);
+  }, 14 * 60 * 1000); // co 14 minut
+
 // Webhook endpoint with raw body parser
 app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
     console.log("🔹 Otrzymano webhook Stripe!");
