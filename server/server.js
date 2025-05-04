@@ -18,10 +18,6 @@ console.log("📩 sendEbookEmail załadowany:", sendEbookEmail);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// IMPORTANT: Configure route-specific middleware
-// The webhook route must come BEFORE any express.json() middleware
-// This is critical for Stripe webhook signature verification
-
 //Refresh app
 setInterval(() => {
     fetch('https://healthycakes-pl-app.onrender.com/')
