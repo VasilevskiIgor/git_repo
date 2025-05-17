@@ -23,7 +23,7 @@ setInterval(() => {
     fetch('https://healthycakes.pl/')
       .then(() => console.log('Ping sent'))
       .catch(console.error);
-  }, 14 * 60 * 1000); // co 14 minut
+  }, 14 * 60 * 100); // co 14 minut
 
 // Webhook endpoint with raw body parser
 app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
