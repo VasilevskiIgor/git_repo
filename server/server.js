@@ -147,7 +147,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Tabela produktów
 const storeItems = new Map([
-    [1, { priceInCents: 3900, name: 'Zdrowe Słodkości: 50 przepisów na dietetyczne ciasta' }]
+    [1, { priceInCents: 200, name: 'Zdrowe Słodkości: 50 przepisów na dietetyczne ciasta' }]
 ]);
 
 // Endpoint do utworzenia sesji Stripe
