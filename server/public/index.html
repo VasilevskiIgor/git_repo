@@ -3,775 +3,1417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zdrowe Słodkości - Przepisy na dietetyczne ciasta bez wyrzutów sumienia</title>
-    <link rel="icon" href="/images/logo.png" type="image/png">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="/images/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/images/apple-touch-logo.png">
-    
+    <title>Przewodnik ChatGPT - Opanuj AI i Odzyskaj Godziny Każdego Dnia!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            line-height: 1.6;
+        * {
             margin: 0;
             padding: 0;
-            color: #333;
-            background-color: #f9f7f4;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7; /* Increased for better readability */
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
+
+        /* Header */
         header {
-            text-align: center;
-            padding: 60px 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem; /* Slightly larger */
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
+
+        .cta-button:hover {
+            transform: translateY(-2px) scale(1.05); /* Added scale */
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 100px; /* Increased padding */
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 6vw, 4.5rem); /* Slightly larger */
             font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1.5rem;
+            line-height: 1.2; /* Tighter line height for large headings */
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            font-weight: 400;
-            max-width: 700px;
+
+        .hero p.subtitle { /* Specific class for subtitle */
+            font-size: 1.35rem; /* Slightly larger */
+            margin-bottom: 2.5rem; /* Increased margin */
+            opacity: 0.95; /* More visible */
+            max-width: 700px; /* Wider for more content */
             margin-left: auto;
             margin-right: auto;
         }
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 40px 0;
-            gap: 30px;
+
+        .price-tag {
+            display: inline-flex; /* Changed to flex for better alignment */
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            margin: 2.5rem 0; /* Increased margin */
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .left-column {
-            flex: 2;
-            min-width: 300px;
-        }
-        .right-column {
-            flex: 1;
-            min-width: 300px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            position: sticky;
-            top: 30px;
-        }
-        .benefits {
-            margin-bottom: 40px;
-        }
-        .benefit-item {
-            display: flex;
-            margin-bottom: 20px;
-            align-items: flex-start;
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-        .benefit-item:hover {
-            transform: translateY(-5px);
-        }
-        .benefit-icon {
-            margin-right: 15px;
-            color: #8bc34a;
-            font-size: 2rem;
-            min-width: 40px;
-            text-align: center;
-        }
-        .preview {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        .preview h3 {
-            color: #8bc34a;
-            border-bottom: 2px dashed #e0e0e0;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        .preview ul {
-            padding-left: 20px;
-        }
-        .preview li {
-            margin-bottom: 10px;
-            position: relative;
-            padding-left: 10px;
-        }
-        .preview li::before {
-            content: "🍰";
-            margin-right: 10px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        .form-group input {
-            width: calc(100% - 22px);
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus {
-            border-color: #8bc34a;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.2);
-        }
-        .price-container {
-            position: relative;
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 30px 0;
-        }
+
         .original-price {
-            font-size: 1.2rem;
-            color: #999;
             text-decoration: line-through;
-            margin-bottom: 5px;
+            opacity: 0.7;
+            font-size: 1.3rem; /* Slightly larger */
         }
-        .price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #8bc34a;
-            margin: 10px 0;
+
+        .current-price {
+            font-size: 2.2rem; /* Slightly larger */
+            font-weight: 700;
+            color: #50fa7b; /* Keep bright green for contrast */
+            margin-left: 1rem;
         }
-        .price-note {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        .discount-badge {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background-color: #ff6b6b;
-            color: white;
-            font-weight: bold;
-            padding: 8px 12px;
-            border-radius: 30px;
-            transform: rotate(15deg);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #8bc34a;
-            color: white;
+        
+       .big-cta {
+            font-size: 1.25rem;
+            padding: 20px 45px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            color: white !important;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
             cursor: pointer;
-            text-align: center;
+            transition: all 0.3s ease !important; /* Dodane !important */
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
             text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(139, 195, 74, 0.2);
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            opacity: 1 !important; /* Zapewnia widoczność */
         }
-        .btn:hover {
-            background-color: #7cb342;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(139, 195, 74, 0.3);
+
+        /* Dodaj ponownie efekt hover */
+        .big-cta:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.6);
         }
-        .secure-payment {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
+
+
+        /* Section general styling */
+        section {
+            padding: 80px 0;
         }
-        .secure-payment img {
-            margin-right: 8px;
-            height: 20px;
-        }
-        .testimonials {
-            margin: 60px 0;
-        }
-        .testimonials h2 {
+        
+        section h2.section-title { /* More specific class for section titles */
             text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-            position: relative;
+            font-size: 2.8rem; 
+            margin-bottom: 4rem; 
+            color: #2d3748;
+            line-height: 1.3;
         }
-        .testimonials h2:after {
-            content: "";
-            display: block;
-            width: 50px;
-            height: 3px;
-            background-color: #8bc34a;
-            margin: 15px auto;
+        
+        section.dark-bg h2.section-title { /* For sections with dark backgrounds */
+            color: white;
         }
-        .testimonial-grid {
+
+
+        /* Why I Wrote Section */
+        .why-section {
+            background: white;
+        }
+
+        .reasons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem; /* Increased gap */
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        .testimonial {
-            padding: 25px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            position: relative;
+
+        .reason-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 20px;
+            padding: 2.5rem; /* Increased padding */
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
         }
-        .testimonial:before {
-            content: """;
-            position: absolute;
-            top: 0;
-            left: 10px;
-            font-size: 5rem;
-            color: rgba(139, 195, 74, 0.2);
-            line-height: 1;
+
+        .reason-card:hover {
+            transform: translateY(-8px); /* Increased lift */
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25); /* Stronger shadow */
         }
-        .testimonial p {
-            position: relative;
-            z-index: 1;
-        }
-        .author {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .author-image {
+
+        .reason-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            margin-right: 15px;
-            background-color: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: #8bc34a;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem; /* Increased margin */
         }
-        .author-info {
-            line-height: 1.3;
+
+        .reason-content h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.4rem; /* Slightly larger */
         }
-        .author-name {
-            font-weight: 600;
+
+        .reason-content p {
+            color: #4a5568;
+            line-height: 1.7; /* Increased for readability */
         }
-        .author-title {
-            font-size: 0.9rem;
-            color: #777;
+
+        /* Interactive Quiz */
+        .interactive-quiz {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
-        .features {
-            background-color: #f6f9f0;
-            padding: 60px 0;
-            margin: 60px 0;
+        /* Uses section.dark-bg h2.section-title */
+
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
+            padding: 2.5rem; /* Increased padding */
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .features h2 {
+
+        .quiz-question {
+            display: none;
             text-align: center;
-            margin-bottom: 40px;
         }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 0 20px;
+
+        .quiz-question.active {
+            display: block;
         }
-        .feature-item {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s ease;
+
+        .quiz-question h3 {
+            font-size: 1.6rem; /* Slightly larger */
+            margin-bottom: 2.5rem; /* Increased margin */
+            color: white; /* Ensure text is white on dark bg */
         }
-        .feature-item:hover {
-            transform: translateY(-10px);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            color: #8bc34a;
-            margin-bottom: 20px;
-        }
-        .feature-title {
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        .recipe-preview {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin: 40px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        .recipe-title {
-            color: #8bc34a;
-            border-bottom: 2px dashed #e0e0e0;
-            padding-bottom: 10px;
-        }
-        .recipe-details {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .recipe-meta {
+
+        .quiz-options {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 10px;
-            min-width: 100px;
+            gap: 1.2rem; /* Increased gap */
         }
-        .meta-label {
-            font-size: 0.8rem;
-            color: #777;
-        }
-        .meta-value {
-            font-weight: 600;
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 2rem; /* Increased padding */
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 1.1rem;
         }
-        footer {
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.4); /* Lighter on hover */
+            transform: translateY(-3px) scale(1.03); /* Added scale */
+        }
+
+        .quiz-result {
+            display: none;
             text-align: center;
-            padding: 40px 20px;
-            background-color: #333;
-            color: white;
-            border-radius: 30px 30px 0 0;
-            margin-top: 60px;
         }
-        .guarantee {
-            background-color: #fff;
-            border: 2px dashed #8bc34a;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin: 30px 0;
-        }
-        .guarantee-icon {
-            font-size: 2rem;
-            color: #8bc34a;
-            margin-bottom: 10px;
-        }
-        .countdown {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
-        }
-        .countdown-timer {
-            font-weight: bold;
-            color: #ff6b6b;
-        }
-        /* Styl dla sekcji FAQ */
-        .faq-section {
-            background-color: white;
-            padding: 60px 0;
-            margin: 60px 0;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        .faq-section h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        .faq-section h2:after {
-            content: "";
+
+        .quiz-result.show {
             display: block;
-            width: 50px;
-            height: 3px;
-            background-color: #8bc34a;
-            margin: 15px auto;
         }
+        
+        .quiz-result h3 {
+            color: white; /* Ensure text is white */
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+        .quiz-result p {
+             margin-bottom: 1.5rem;
+        }
+
+        .result-content {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            border-radius: 15px;
+        }
+        .result-content .cta-button { /* Style for button inside quiz result */
+             margin-top: 1.5rem;
+        }
+
+        /* Content Preview */
+        .content-preview {
+            background: white;
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem; /* Increased gap */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chapter-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 20px;
+            padding: 2.5rem; /* Increased padding */
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            gap: 2rem; /* Increased gap */
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25);
+        }
+
+        .chapter-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .chapter-content h3 {
+            color: #2d3748;
+            margin-bottom: 1.2rem; /* Increased margin */
+            font-size: 1.4rem; /* Slightly larger */
+        }
+
+        .chapter-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .chapter-content li {
+            margin-bottom: 1rem; /* Increased margin */
+            padding-left: 2rem; /* Increased padding for icon */
+            position: relative;
+            color: #4a5568;
+            line-height: 1.7; /* Increased for readability */
+        }
+
+        .chapter-content li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em; /* Slightly larger checkmark */
+        }
+
+        /* Features Section */
+        .features-section {
+            background: #f8fafc; 
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem; /* Increased gap */
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem; /* Increased padding */
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(102, 126, 234, 0.15); /* Adjusted shadow */
+        }
+
+        .feature-icon {
+            font-size: 3rem; /* Larger icon */
+            margin-bottom: 1.5rem; /* Increased margin */
+            color: #667eea; /* Consistent color */
+        }
+
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.4rem; /* Slightly larger */
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        /* Uses section.dark-bg h2.section-title */
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem; /* Increased gap */
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; /* Ensure text is white */
+        }
+        .testimonial p {
+            font-size: 1.1rem; /* Slightly larger */
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        .testimonial strong {
+            display: block;
+            margin-top: 1rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 1.3rem; /* Slightly larger */
+            margin-bottom: 1.5rem; /* Increased margin */
+        }
+
+        /* Email Section / Final CTA */
+        .email-section {
+            background: #f0f4f8; /* Light background for contrast before footer */
+            padding: 100px 0; /* More padding */
+            text-align: center;
+        }
+
+        .email-section h2.section-title { /* Use section-title class */
+            color: #2d3748; /* Dark text on light bg */
+            margin-bottom: 1.5rem; /* Adjusted margin for this specific title */
+        }
+
+        .email-section p.subtitle-cta { /* Specific class for subtitle */
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            color: #4a5568; 
+            max-width: 700px; /* Wider */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .email-form-container { 
+            max-width: 500px;
+            margin: 0 auto 2.5rem; 
+            display: flex;
+            flex-direction: column; 
+            gap: 1rem; 
+        }
+
+        .email-form-container input[type="email"] {
+            width: 100%; 
+            padding: 18px 25px; 
+            border: 1px solid #ccc; 
+            border-radius: 50px;
+            font-size: 1.1rem;
+            background: white; 
+            color: #2d3748;
+            text-align: center; 
+        }
+
+        .email-form-container input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea; 
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .email-form-container .big-cta { 
+            width: 100%; 
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem; 
+            flex-wrap: wrap;
+            margin-top: 2rem; 
+        }
+
+        .badge {
+            background: rgba(0, 0, 0, 0.05); 
+            color: #4a5568; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        /* FAQ Section - Original Styling */
+        .faq-section {
+            background: #f8fafc;
+            padding: 80px 0;
+        }
+
+        .faq-section h2.section-title { /* Use section-title class */
+            text-align: center;
+            font-size: 2.5rem; /* Original size */
+            margin-bottom: 3rem; /* Original margin */
+            color: #2d3748;
+        }
+
         .faq-container {
             max-width: 800px;
             margin: 0 auto;
         }
+
         .faq-item {
-            margin-bottom: 20px;
-            border-bottom: 1px dashed #e0e0e0;
-            padding-bottom: 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
+
+        .faq-item:hover {
+            transform: translateY(-2px);
+        }
+
         .faq-question {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 10px;
+            padding: 1.5rem 2rem;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: white;
+            transition: background 0.3s ease;
         }
+
         .faq-question:hover {
-            color: #8bc34a;
+            background: #f8fafc;
         }
+
+        .faq-question h3 {
+            color: #2d3748;
+            font-size: 1.2rem;
+            margin: 0;
+            flex: 1;
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
         .faq-answer {
-            color: #555;
-            padding-top: 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background: #f8fafc;
         }
-        .faq-contact {
+
+        .faq-answer.open {
+            max-height: 500px;
+            padding: 1.5rem 2rem;
+        }
+
+        .faq-answer p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        /* Footer */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 50px 0; 
             text-align: center;
-            margin-top: 40px;
-            font-weight: 500;
-            color: #555;
         }
-        .faq-contact a {
-            color: #8bc34a;
+        footer p {
+            margin-bottom: 0.8rem; /* Increased spacing */
+            opacity: 0.9;
+            font-size: 0.95rem; /* Slightly larger */
+        }
+        .footer-links {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .footer-links a {
+            color: #a0aec0; /* Lighter color for links */
             text-decoration: none;
-            font-weight: 600;
+            margin: 0 10px;
+            transition: color 0.3s ease;
         }
-        .faq-contact a:hover {
+        .footer-links a:hover {
+            color: #667eea; /* Highlight color on hover */
+        }
+        .footer-contact a {
+            color: #667eea;
+            text-decoration: none;
+        }
+         .footer-contact a:hover {
             text-decoration: underline;
         }
-        .faq-icon {
-            color: #8bc34a;
-            margin-right: 10px;
+
+
+        /* Loading Spinner */
+        .loading {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); 
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
         }
+
+        .spinner {
+            width: 60px; 
+            height: 60px;
+            border: 6px solid #f3f3f3; 
+            border-top: 6px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .content {
+            .header-content {
                 flex-direction: column;
+                gap: 1rem;
             }
-            .left-column, .right-column {
-                flex: none;
-            }
-            .right-column {
-                position: static;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .feature-grid, .testimonial-grid {
+            .logo { font-size: 1.4rem; }
+
+            .hero { padding: 100px 0 60px; }
+            .hero h1 { font-size: clamp(2.2rem, 8vw, 3rem); }
+            .hero p.subtitle { font-size: 1.1rem; max-width: 90%; }
+            .price-tag { flex-direction: column; gap: 0.5rem; padding: 0.8rem 1.5rem; }
+            .original-price { font-size: 1.1rem; }
+            .current-price { font-size: 1.8rem; margin-left: 0; }
+            .big-cta { font-size: 1.1rem; padding: 18px 35px; }
+
+
+            section h2.section-title { font-size: 2.2rem; margin-bottom: 2.5rem; }
+
+
+            .reasons-grid, .features-grid, .testimonial-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
+            .reason-card, .feature-card, .testimonial { padding: 1.5rem; }
+
+
+            .quiz-container { padding: 1.5rem; }
+            .quiz-question h3 { font-size: 1.3rem; margin-bottom: 1.5rem; }
+            .quiz-option { padding: 1rem 1.5rem; font-size: 1rem; }
+
+
+            .chapters-grid { gap: 1.5rem; }
+            .chapter-card { flex-direction: column; align-items: center; text-align: center; padding: 1.5rem; }
+            .chapter-number { margin-bottom: 1rem; }
+            .chapter-content li { text-align: left; } 
+            
+            .email-section { padding: 60px 0; }
+            .email-section h2.section-title { font-size: 2rem; } /* Adjusted for mobile */
+            .email-section p.subtitle-cta { font-size: 1.1rem; }
+            .email-form-container input[type="email"] { padding: 15px 20px; font-size: 1rem;}
+           
+            .security-badges { flex-direction: column; align-items: center; gap: 1rem; }
+
+            /* FAQ mobile - original styling should be fine, but can adjust if needed */
+            .faq-question { padding: 1.2rem 1rem; }
+            .faq-question h3 { font-size: 1rem; }
+            .faq-answer.open { padding: 1.2rem 1rem; }
+            
+            footer { padding: 30px 0; }
+            footer p { font-size: 0.9rem; }
+            .footer-links a { margin: 0 8px; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
     <header>
         <div class="container">
-            <h1>Zdrowe Słodkości</h1>
-            <div class="subtitle">Odkryj 50 przepisów na pyszne, niskokaloryczne ciasta, które smakują jak grzech, a są dobre dla sylwetki</div>
+            <div class="header-content">
+                <div class="logo">🤖 Przewodnik ChatGPT</div>
+                <a href="#email-section" class="cta-button">Kup Teraz</a>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="content">
-            <div class="left-column">
-                <h2>Dlaczego ten eBook zmieni Twoje podejście do słodkości?</h2>
-                <div class="benefits">
-                    <div class="benefit-item">
-                        <div class="benefit-icon">🍓</div>
-                        <div>
-                            <strong>Niskokaloryczne alternatywy</strong>
-                            <p>Każdy przepis zawiera mniej niż 200 kcal na porcję, co pozwala cieszyć się słodkościami bez wyrzutów sumienia</p>
-                        </div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-icon">🧁</div>
-                        <div>
-                            <strong>Pełen smak bez kompromisów</strong>
-                            <p>Przepisy zostały wielokrotnie przetestowane, aby zapewnić idealny smak przy minimalnej ilości kalorii</p>
-                        </div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-icon">🥄</div>
-                        <div>
-                            <strong>Proste składniki i łatwe przygotowanie</strong>
-                            <p>Wszystkie przepisy wykorzystują składniki dostępne w każdym supermarkecie i są łatwe w przygotowaniu</p>
-                        </div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-icon">📱</div>
-                        <div>
-                            <strong>Dokładne informacje o wartościach odżywczych</strong>
-                            <p>Każdy przepis zawiera pełne informacje o kaloriach, białku, tłuszczach i węglowodanach</p>
-                        </div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-icon">💪</div>
-                        <div>
-                            <strong>Bogate w białko</strong>
-                            <p>Wiele przepisów wzbogaconych o dodatkowe białko dla osób aktywnych.</p>
-                        </div>
-                    </div>
+        <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Opanuj ChatGPT i Odzyskaj Godziny Każdego Dnia!</h1>
+                <p class="subtitle">Dowiedz się, jak wykorzystać pełen potencjał AI, by pracować mądrzej, a nie ciężej. Ten praktyczny przewodnik pokaże Ci krok po kroku, jak zautomatyzować zadania, tworzyć genialne treści i zrewolucjonizować swoją produktywność – nawet jeśli zaczynasz od zera!</p>
+                
+                <div class="price-tag">
+                    <span class="original-price">179 zł</span>
+                    <span class="current-price">TYLKO 89 zł</span>
                 </div>
 
-                <div class="recipe-preview">
-                    <h3 class="recipe-title">Fragment przepisu: Czekoladowe brownie z fasoli (tylko 120 kcal na porcję!)</h3>
-                    <div class="recipe-details">
-                        <div class="recipe-meta">
-                            <span class="meta-label">Czas</span>
-                            <span class="meta-value">30 min</span>
-                        </div>
-                        <div class="recipe-meta">
-                            <span class="meta-label">Kalorie</span>
-                            <span class="meta-value">120 kcal</span>
-                        </div>
-                        <div class="recipe-meta">
-                            <span class="meta-label">Białko</span>
-                            <span class="meta-value">7g</span>
-                        </div>
-                        <div class="recipe-meta">
-                            <span class="meta-label">Trudność</span>
-                            <span class="meta-value">Łatwy</span>
-                        </div>
-                    </div>
-                    <p>Odkryj sekret wilgotnego brownie bez mąki i masła! Ten przepis wykorzystuje czarną fasolę jako bazę, dodając białka i błonnika do Twojego ulubionego deseru. Goście nigdy nie zgadną, że jedzą zdrowszą wersję klasyka...</p>
-                    <p style="color: #8bc34a; font-weight: bold;">Pełny przepis znajdziesz w eBooku!</p>
-                </div>
-
-                <h2>Co zawiera eBook „Zdrowe Słodkości"?</h2>
-                <div class="preview">
-                    <h3>Spis rozdziałów:</h3>
-                    <ul>
-                        <li>Podstawy pieczenia fit – zamienniki cukru, mąki i tłuszczu</li>
-                        <li>Ciasta czekoladowe i brownie – około 10 przepisów poniżej 200 kcal</li>
-                        <li>Serniki i ciasta z owocami – kilka wariantów</li>
-                        <li>Muffiny i babeczki – szybkie przekąski do 150 kcal</li>
-                        <li>Tarty i ciasta kruche – zdrowe wersje klasycznych wypieków</li>
-                        <li>Desery bez pieczenia – idealne na upalne dni</li>
-                        <li>Dodatki – zdrowe kremy, polewy i sosy</li>
-                    </ul>
-                </div>
-                <div class="features">
-                    <h2>Co jeszcze otrzymasz?</h2>
-                    <div class="feature-grid">
-                        <div class="feature-item">
-                            <div class="feature-icon">📊</div>
-                            <div class="feature-title">Pełna informacja o wartościach odżywczych</div>
-                            <p>Każdy przepis zawiera dokładne dane o kaloriach, białku, tłuszczach i węglowodanach, dzięki czemu łatwo dopasujesz ciasta do swojej diety</p>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🔄</div>
-                            <div class="feature-title">Tabela zamienników</div>
-                            <p>Kompletna tabela zamienników składników dla osób z alergiami lub specjalnymi wymaganiami dietetycznymi</p>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">📱</div>
-                            <div class="feature-title">Dostęp mobilny</div>
-                            <p>Wygodny format PDF do czytania na dowolnym urządzeniu – telefonie, tablecie czy komputerze</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonials">
-                    <h2>Co mówią czytelnicy</h2>
-                    <div class="testimonial-grid">
-                        <div class="testimonial">
-                            <p>"Dzięki tym przepisom mogę cieszyć się słodkościami nawet na diecie redukcyjnej. Sernik z ricotty to mój absolutny hit – tylko 140 kcal, a smakuje obłędnie!"</p>
-                            <div class="author">
-                                <div class="author-image">A</div>
-                                <div class="author-info">
-                                    <div class="author-name">Katarzyna Klepczarek</div>
-                                    <div class="author-title">Straciła 12 kg w 6 miesięcy</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial">
-                            <p>"Jako trener personalny polecam ten eBook wszystkim moim klientkom. Wreszcie przestały sabotować swoje diety weekendowymi wypiekami!"</p>
-                            <div class="author">
-                                <div class="author-image">M</div>
-                                <div class="author-info">
-                                    <div class="author-name">Marek Ostrowski</div>
-                                    <div class="author-title">Trener personalny</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial">
-                            <p>"Brownie z fasoli zmieniło moje życie! Moje dzieci uwielbiają te ciasta i nie mają pojęcia, że są zdrowsze. Podwójna wygrana dla mamy!"</p>
-                            <div class="author">
-                                <div class="author-image">K</div>
-                                <div class="author-info">
-                                    <div class="author-name">Karolina Wiśniewska</div>
-                                    <div class="author-title">Mama trójki dzieci</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <button class="big-cta" onclick="document.getElementById('email-section').scrollIntoView({behavior: 'smooth'})">
+                    📚 Tak, Chcę Mój Przewodnik!
+                </button>
             </div>
+        </div>
+    </section>
 
-       <div class="right-column">
-                <h2>Zdobądź ebooka już teraz!</h2>
-                <div class="price-container">
-                    <div class="discount-badge">-50%</div>
-                    <div class="original-price">78 zł</div>
-                    <div class="price">39 zł</div>
-                    <div class="price-note">Jednorazowa płatność, dożywotni dostęp</div>
-                </div>
-                <form id="payment-form">
-                    <div class="form-group">
-                        <label for="email">Adres e-mail</label>
-                        <input type="email" id="email" name="email" placeholder="Twój adres e-mail" required>
+    <section class="why-section">
+        <div class="container">
+            <h2 class="section-title">Dlaczego Ten Poradnik Zmieni Twoje Podejście do Pracy?</h2>
+            <div class="reasons-grid">
+                <div class="reason-card">
+                    <div class="reason-number">1</div>
+                    <div class="reason-content">
+                        <h3>Rewolucja AI Jest Tutaj</h3>
+                        <p>Sztuczna inteligencja to nie przyszłość – to teraźniejszość. Ten przewodnik demistyfikuje AI i pokazuje, jak możesz ją praktycznie wykorzystać, by zyskać przewagę konkurencyjną i więcej wolnego czasu.</p>
                     </div>
-                    <button type="submit" id="checkout-button" class="btn">KUP TERAZ</button>
-                </form>
-                <div class="secure-payment">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8 14C4.69 14 2 11.31 2 8C2 4.69 4.69 2 8 2C11.31 2 14 4.69 14 8C14 11.31 11.31 14 8 14ZM11.1 5.3L6.7 9.7L4.9 7.9C4.5 7.5 3.9 7.5 3.5 7.9C3.1 8.3 3.1 8.9 3.5 9.3L6.1 11.9C6.5 12.3 7.1 12.3 7.5 11.9L12.5 6.9C12.9 6.5 12.9 5.9 12.5 5.5C12.1 5.1 11.5 5.1 11.1 5.3Z" fill="#8bc34a"/>
-                    </svg>
-                    <span>Bezpieczna płatność przez Stripe</span>
                 </div>
-                <div class="countdown">
-                    <p>Promocja kończy się za:</p>
-                    <div class="countdown-timer" id="countdown">23:59:59</div>
+                
+                <div class="reason-card">
+                    <div class="reason-number">2</div>
+                    <div class="reason-content">
+                        <h3>Moja Transformacja i Twoja Szansa</h3>
+                        <p>Osobiście zwielokrotniłem swoją efektywność dzięki AI. Przekształciłem frustrujące, czasochłonne zadania w zautomatyzowane procesy. Chcę, abyś Ty też tego doświadczył – bez miesięcy prób i błędów.</p>
+                    </div>
                 </div>
-                <div class="guarantee">
-                    <div class="guarantee-icon">✓</div>
-                    <strong>Tylko 39 zł za dostęp do 50 sprawdzonych przepisów.</strong>
-                    <p>Nasz ebook to nie tylko przepisy - to kompletny przewodnik po świecie zdrowych deserów, który pomoże Ci cieszyć się słodkościami bez wyrzutów sumienia.</p>
+                
+                <div class="reason-card">
+                    <div class="reason-number">3</div>
+                    <div class="reason-content">
+                        <h3>Demokratyzacja Wiedzy o AI</h3>
+                        <p>Moim celem jest uzbrojenie Cię w umiejętności, które za chwilę będą niezbędne na rynku pracy. Ten przewodnik to skondensowana wiedza, która pozwoli Ci wyprzedzić innych i pewnie wkroczyć w erę AI.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-     <!-- Nowa sekcja FAQ -->
-     <div class="faq-section">
+    </section>
+
+    <section class="interactive-quiz dark-bg">
         <div class="container">
-            <h2>Często zadawane pytania</h2>
+            <h2 class="section-title">Czy Ten Przewodnik Jest Dla Ciebie? Sprawdź w 60 Sekund!</h2>
+            <div class="quiz-container">
+                <div class="quiz-question active" data-question="1">
+                    <h3>Ile czasu dziennie MARNUJESZ na powtarzalne, mało kreatywne zadania?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="nextQuestion(1, 'Mniej niż godzinę')">Mniej niż godzinę</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, '1-3 godziny – czuję, że to za dużo!')">1-3 godziny – czuję, że to za dużo!</button>
+                        <button class="quiz-option" onclick="nextQuestion(1, 'Zdecydowanie ponad 3 godziny – ratunku!')">Zdecydowanie ponad 3 godziny – ratunku!</button>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="2">
+                    <h3>Jak często myślisz: "Czy ChatGPT mógłby mi w tym pomóc?"</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="nextQuestion(2, 'Rzadko, nie wiem od czego zacząć')">Rzadko, nie wiem od czego zacząć</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 'Czasami, ale efekty są średnie')">Czasami, ale efekty są średnie</button>
+                        <button class="quiz-option" onclick="nextQuestion(2, 'Często, ale chcę być w tym EKSPERTEM!')">Często, ale chcę być w tym EKSPERTEM!</button>
+                    </div>
+                </div>
+                
+                <div class="quiz-question" data-question="3">
+                    <h3>Co chcesz osiągnąć dzięki lepszemu wykorzystaniu AI?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="showResult('Zwiększenie produktywności')">Więcej zrobić w krótszym czasie</button>
+                        <button class="quiz-option" onclick="showResult('Nauka nowych umiejętności')">Szybciej uczyć się i rozwijać</button>
+                        <button class="quiz-option" onclick="showResult('Automatyzacja zadań')">Zautomatyzować nudne obowiązki</button>
+                    </div>
+                </div>
+                
+                <div class="quiz-result" id="quiz-result">
+                    <div class="result-content">
+                        <h3>💡 Doskonale! Ten przewodnik jest STWORZONY dla Ciebie!</h3>
+                        <p>Widzimy, że chcesz pracować efektywniej i mądrzej. Nasz przewodnik dostarczy Ci konkretnych narzędzi i strategii, by ChatGPT stał się Twoim najlepszym asystentem.</p>
+                        <button class="cta-button" onclick="document.getElementById('email-section').scrollIntoView({behavior: 'smooth'})">
+                            🚀 Tak, chcę zacząć oszczędzać czas!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-preview">
+        <div class="container">
+            <h2 class="section-title">Co Konkretnie Zyskasz Dzięki Temu Przewodnikowi? (Podgląd Rozdziałów)</h2>
+            <div class="chapters-grid">
+                <div class="chapter-card">
+                    <div class="chapter-number">01</div>
+                    <div class="chapter-content">
+                        <h3>Prawidłowa konfiguracja ChatGPT w 10 krokach</h3>
+                        <ul>
+                            <li>Dowiedz się, jak skonfigurować konto ChatGPT, aby uzyskać maksymalną wydajność</li>
+                            <li>Opracujesz system organizacji pracy z czatami i projektami, aby nie tracić ważnych informacji</li>
+                            <li>Zdobądź wiedzę na temat tego, kiedy i którego modelu ChatGPT używać w przypadku różnych typów zadań</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">02</div>
+                    <div class="chapter-content">
+                        <h3>Od zabawki do narzędzia: 10 sposobów na zaoszczędzenie 3 godzin dziennie</h3>
+                        <ul>
+                            <li>Wdróż 10 sprawdzonych sposobów wykorzystania ChatGPT w zadaniach osobistych i służbowych, które pozwolą Ci zaoszczędzić godziny pracy</li>
+                            <li>Opanujesz formułowanie zapytań, które od razu dadzą dokładne wyniki</li>
+                            <li>Przekształć ChatGPT z zabawki w narzędzie codziennej pracy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">03</div>
+                    <div class="chapter-content">
+                        <h3>Jak działają LLM-y, dlaczego kłamią i jak tego unikać</h3>
+                        <ul>
+                            <li>Dowiedz się, czym naprawdę są ChatGPT i LLM oraz jak działają</li>
+                            <li>Poznaj zasady tokenizacji i okna kontekstowego, aby tworzyć skuteczniejsze zapytania</li>
+                            <li>Poznaj 5 praktycznych scenariuszy rozwiązywania problemów pojawiających się podczas komunikacji z siecią neuronową</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">04</div>
+                    <div class="chapter-content">
+                        <h3>Zaoszczędź tysiące złotych na projektantach: stwórz wizualizacje samodzielnie</h3>
+                        <ul>
+                            <li>Będziesz w stanie tworzyć profesjonalne materiały wizualne na potrzeby serwisów społecznościowych, prezentacji i stron internetowych, nie mając żadnego doświadczenia w projektowaniu</li>
+                            <li>Uzyskaj 20 gotowych skryptów do generowania obrazów ze sprawdzonymi monitami dla każdego zadania</li>
+                            <li>Zaczniesz oszczędzać tysiące złotych na projektantach, zachowując jednocześnie wysoką jakość</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">05</div>
+                    <div class="chapter-content">
+                        <h3>Zostań ekspertem w dowolnym temacie w 20 minut</h3>
+                        <ul>
+                            <li>Naucz się rozumieć dowolny temat w 20 minut dzięki ustrukturyzowanym badaniom</li>
+                            <li>Opanujesz tworzenie idealnych zapytań do dogłębnej analizy na konkretnych przykładach</li>
+                            <li>Uzyskaj gotowe szablony wniosków na projekty biznesowe, edukacyjne i osobiste</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">06</div>
+                    <div class="chapter-content">
+                        <h3>Zautomatyzuj rutynę: stwórz własnych asystentów GPT</h3>
+                        <ul>
+                            <li>Automatyzuj powtarzalne zadania, tworząc wysoce wyspecjalizowane GPT</li>
+                            <li>Poznaj ponad 12 gotowych przykładów udanych GPT ze sklepu GPT Store</li>
+                            <li>Unikaj typowych błędów podczas tworzenia i dowiedz się więcej o GPT do użytku korporacyjnego</li>
+                        </ul>
+                    </div>
+                </div>
+
+                 <div class="chapter-card">
+                    <div class="chapter-number">07</div>
+                    <div class="chapter-content">
+                        <h3>Osobisty asystent, który przypomina Ci o wszystkim</h3>
+                        <ul>
+                            <li>Zmień ChatGPT w proaktywnego asystenta, który będzie Ci przypominał o ważnych rzeczach</li>
+                            <li>Skonfiguruj ponad 10 gotowych scenariuszy: od planowania posiłków po monitorowanie trendów w Twojej branży</li>
+                            <li>Zautomatyzuj swoją codzienną rutynę dzięki inteligentnym przypomnieniom i podsumowaniom informacyjnym</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">08</div>
+                    <div class="chapter-content">
+                        <h3>Uzyskaj dokładne wyniki już po pierwszym zapytaniu</h3>
+                        <ul>
+                            <li>Opanuj złotą formułę Prompt</li>
+                            <li>Poznaj 9 zaawansowanych technik podpowiadania i dowiedz się, czym różnią się one od podejścia dialogowego</li>
+                            <li>Zrozum hierarchię instrukcji i niuanse techniczne, aby osiągnąć maksymalną wydajność</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">09</div>
+                    <div class="chapter-content">
+                        <h3>Wybierz odpowiednie narzędzie do automatyzacji</h3>
+                        <ul>
+                            <li>Porównaj 6 głównych platform automatyzacji: od Zapiera do n8n</li>
+                            <li>Wybierzesz optymalne narzędzie biorąc pod uwagę swój budżet i umiejętności techniczne</li>
+                            <li>Otrzymasz szczegółowe zalecenia i tabelę porównawczą funkcji i cen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">10</div>
+                    <div class="chapter-content">
+                        <h3>50 gotowych podpowiedzi na niemal każdą okazję</h3>
+                        <ul>
+                            <li>Uzyskaj ponad 50 sprawdzonych wskazówek dla 17 obszarów zastosowań</li>
+                            <li>Gotowe szablony do natychmiastowego wykorzystania w pracy i życiu prywatnym</li>
+                            <li>Przykłady dla różnych branż i specjalizacji</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Co Dokładnie Otrzymasz w Tym Unikalnym Przewodniku?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3>Praktyka, Nie Teoria</h3>
+                    <p>Konkretne przykłady zastosowania ChatGPT w różnych branżach. Zero lania wody, 100% praktycznej wiedzy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Natychmiastowa Oszczędność Czasu</h3>
+                    <p>Scenariusze i zadania, które od pierwszego dnia pozwolą Ci odzyskać cenne godziny.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Gotowe Rozwiązania "Kopiuj-Wklej"</h3>
+                    <p>Sprawdzone prompty i instrukcje, które możesz natychmiast zaimplementować w swojej pracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Wzrost Produktywności Gwarantowany</h3>
+                    <p>Metody na automatyzację rutyny i zwiększenie efektywności, które naprawdę działają.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+                    <h3>AI w Życiu Codziennym</h3>
+                    <p>Wykorzystaj ChatGPT do planowania, nauki, hobby i rozwiązywania codziennych wyzwań.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Techniki Dla Zaawansowanych</h3>
+                    <p>Poznaj strategie i najlepsze praktyki, by stać się prawdziwym mistrzem AI.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials dark-bg">
+        <div class="container">
+            <h2 class="section-title">Nie Wierz Nam Na Słowo – Posłuchaj, Co Mówią Czytelnicy!</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Ten przewodnik to game-changer! Już pierwszego dnia zaoszczędziłam bite 2 godziny na raportach. Przykłady są genialne i łatwe do wdrożenia. Polecam każdemu, kto ceni swój czas!"</p>
+                    <strong>- Anna K., Marketing Manager</strong>
+                </div>
+                <div class="testimonial">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Jako programista byłem sceptyczny, ale ten materiał otworzył mi oczy na nowe możliwości ChatGPT. Konkretne techniki, zero lania wody. Najlepsza inwestycja w rozwój od dawna."</p>
+                    <strong>- Marcin L., Software Developer</strong>
+                </div>
+                <div class="testimonial">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Myślałam, że ChatGPT to tylko ciekawostka. Po przeczytaniu tego przewodnika, stał się moim głównym narzędziem do researchu, tworzenia ofert i planowania. Niesamowite!"</p>
+                    <strong>- Katarzyna P., Właścicielka Małej Firmy</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="email-section" id="email-section">
+        <div class="container">
+            <h2 class="section-title">Twoja Podróż Ku Mistrzostwu w AI Zaczyna Się TERAZ!</h2>
+            <p class="subtitle-cta">Nie pozwól, by rewolucja AI Cię ominęła. Zdobądź przewodnik, który da Ci przewagę i odblokuje Twój pełen potencjał. Wpisz swój email, aby natychmiast otrzymać dostęp i zacząć transformację!</p>
+            
+            <div class="email-form-container">
+                <input type="email" id="customerEmail" placeholder="Wpisz swój najlepszy adres email" required>
+                <button class="big-cta" onclick="initiatePurchase()">
+                    TAK, CHCĘ MÓJ PRZEWODNIK TERAZ! (89 zł)
+                </button>
+            </div>
+            
+            <div class="security-badges">
+                <span class="badge">🔒 Bezpieczna Płatność SSL</span>
+                <span class="badge">⚡ Natychmiastowa Dostawa PDF</span>
+                <span class="badge">💯 30-Dniowa Gwarancja Satysfakcji</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Często zadawane pytania</h2>
             <div class="faq-container">
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <span><i class="fas fa-question-circle faq-icon"></i> Jak otrzymam ebooka po zakupie?</span>
+                    <div class="faq-question" onclick="toggleFAQ(1)">
+                        <h3>Czy potrzebuję płatnego konta ChatGPT?</h3>
+                        <span class="faq-icon">+</span>
                     </div>
-                    <div class="faq-answer">
-                        <p>Po dokonaniu płatności, ebook zostanie automatycznie wysłany na podany adres email jako załącznik do pobrania. Dostęp do niego będziesz mieć natychmiast po potwierdzeniu transakcji.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span><i class="fas fa-question-circle faq-icon"></i> Czy przepisy wymagają specjalnych składników?</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Nie, wszystkie przepisy zostały opracowane z myślą o łatwej dostępności składników. Wykorzystujemy produkty, które znajdziesz w każdym supermarkecie. Dodatkowo, w ebooku znajdziesz tabelę zamienników dla osób z alergiami lub na specjalnych dietach.</p>
+                    <div class="faq-answer" id="faq-1">
+                        <p>Około 70% przewodnika można wykorzystać bez subskrypcji. Ale różnica między bezpłatną a płatną wersją ChatGPT jest taka sama jak między Ładą a Porsche: oba działają, ale doświadczenie jest inne. W przewodniku wyraźnie wskazuję, które techniki wymagają subskrypcji, a które są dostępne dla każdego.</p>
                     </div>
                 </div>
+
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <span><i class="fas fa-question-circle faq-icon"></i> Czy mogę zwrócić ebooka?</span>
+                    <div class="faq-question" onclick="toggleFAQ(2)">
+                        <h3>Ile czasu zajmie opanowanie materiału?</h3>
+                        <span class="faq-icon">+</span>
                     </div>
-                    <div class="faq-answer">
-                        <p>Ze względu na cyfrowy charakter produktu, zwroty nie są akceptowane. Jeśli masz jakiekolwiek problemy z ebookiem, skontaktuj się z nami, a postaramy się pomóc.</p>
+                    <div class="faq-answer" id="faq-2">
+                        <p>Przewodnik został zaprojektowany tak, aby można było zacząć korzystać z pierwszych technik już po 30 minutach czytania. Pełne opanowanie wszystkich 10 rozdziałów zajmuje średnio 2-3 tygodnie przy poświęceniu 15-20 minut dziennie. Najważniejsze jest to, że już od pierwszego dnia zaczniesz oszczędzać czas dzięki gotowym przykładom.</p>
                     </div>
                 </div>
+
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <span><i class="fas fa-question-circle faq-icon"></i> Ile kalorii mają przepisy?</span>
+                    <div class="faq-question" onclick="toggleFAQ(3)">
+                        <h3>Czy ten poradnik będzie dla mnie przydatny, jeśli nie jestem ekspertem od technologii?</h3>
+                        <span class="faq-icon">+</span>
                     </div>
-                    <div class="faq-answer">
-                        <p>Wszystkie przepisy zawarte w ebooku zostały starannie opracowane tak, aby zawierały mniej niż 200 kcal na porcję. Większość przepisów mieści się w przedziale 120-180 kcal, a niektóre nawet poniżej 100 kcal na porcję! Każdy przepis zawiera dokładne informacje o wartościach odżywczych (kalorie, białko, tłuszcze)
-                        </div>
+                    <div class="faq-answer" id="faq-3">
+                        <p>Absolutnie tak! Przewodnik został napisany w sposób przystępny dla każdego, niezależnie od poziomu znajomości technologii. Wszystkie instrukcje są przedstawione krok po kroku, z konkretnymi przykładami i zrzutami ekranu. Jeśli potrafisz korzystać z WhatsApp, z łatwością opanujesz techniki z tego przewodnika.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(4)">
+                        <h3>W jakim formacie będzie przewodnik?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-4">
+                        <p>Przewodnik dostępny jest w formacie PDF, który możesz czytać na dowolnym urządzeniu - komputerze, tablecie czy smartfonie. Dodatkowo otrzymasz dostęp do wersji online z możliwością kopiowania gotowych promptów jednym kliknięciem.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(5)">
+                        <h3>Czy przewodnik będzie aktualizowany w miarę udostępniania nowych funkcji ChatGPT?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-5">
+                        <p>Tak! Wszyscy kupujący otrzymują dożywotnie aktualizacje przewodnika. Gdy OpenAI wprowadza nowe funkcje, aktualizuję przewodnik i wysyłam nową wersję na email. To oznacza, że Twoja inwestycja będzie się zwracać przez lata.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(6)">
+                        <h3>Czy możliwe jest wykorzystanie technik opisanych w tym przewodniku do pracy z innymi sieciami neuronowymi?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-6">
+                        <p>Zdecydowanie tak! Większość technik i zasad opisanych w przewodniku można zastosować również do Claude, Gemini, czy innych modeli AI. Przewodnik uczy uniwersalnych zasad komunikacji z AI, które będą przydatne niezależnie od tego, które narzędzie wybierzesz.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(7)">
+                        <h3>Jestem z Rosji/Białorusi i nie mogę korzystać z ChatGPT ani za niego płacić</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-7">
+                        <p>W przewodniku znajdziesz rozdział poświęcony alternatywnym sposobom dostępu do ChatGPT oraz innym narzędziom AI dostępnym w Twojej lokalizacji. Wszystkie opisane techniki można również zastosować do darmowych alternatyw jak Yandex GPT czy innych lokalnych rozwiązań.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(8)">
+                        <h3>Czy poradnik zawiera gotowe scenariusze dla poszczególnych zawodów?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-8">
+                        <p>Tak! W przewodniku znajdziesz dedykowane przykłady dla 15+ różnych zawodów i branż: marketing, sprzedaż, HR, finanse, IT, prawo, edukacja, e-commerce i wiele innych. Każdy przykład zawiera gotowe prompty, które możesz od razu skopiować i użyć.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(9)">
+                        <h3>A co jeśli przewodnik okaże się bezużyteczny?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer" id="faq-9">
+                        <p>Oferuję 30-dniową gwarancję zwrotu pieniędzy bez zadawania pytań. Jeśli przez 30 dni nie zaoszczędzisz dzięki przewodnikowi ani godziny pracy, po prostu napisz email a zwrócę Ci całą kwotę. To dla mnie znak, że tak bardzo wierzę w wartość tego materiału.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>       
+    </section>
 
-    <!-- Skrypt Stripe i obsługa formularza -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Przewodnik ChatGPT. Wszelkie prawa zastrzeżone.</p>
+            <div class="footer-links">
+                <a href="#privacy-policy">Polityka Prywatności</a>
+                <a href="#rodo-information">Informacja RODO</a>
+                <a href="#terms-of-service">Regulamin</a>
+            </div>
+            <p class="footer-contact">Masz pytania? Skontaktuj się z nami: <a href="mailto:kontakt@przewodnikchatgpt.pl">kontakt@przewodnikchatgpt.pl</a></p>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 1.5rem;">Pamiętaj: inwestycja w wiedzę i umiejętności to najlepsza lokata kapitału.</p>
+        </div>
+    </footer>
+
     <script>
-        // Pobieranie elementów formularza
-        const form = document.getElementById('payment-form');
-        const emailInput = document.getElementById('email');
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Replace with your actual publishable key
+
+        // GSAP Animations
+        if (typeof gsap !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger); 
+            
+            gsap.from('.hero h1', {duration: 1, y: 50, opacity: 0, ease: 'power2.out', delay: 0.2});
+            gsap.from('.hero p.subtitle', {duration: 1, y: 30, opacity: 0, delay: 0.5, ease: 'power2.out'});
+            gsap.from('.price-tag', {duration: 1, scale: 0.8, opacity: 0, delay: 0.8, ease: 'back.out(1.7)'});
+           // Zmień tę część w sekcji GSAP Animations
+            gsap.from('.hero .big-cta', {
+                duration: 1, 
+                y: 0, 
+                opacity: 1,  // Zmienione z 0 na 1
+                delay: 1.1, 
+                ease: 'power2.out'
+            });
+        }
+
+
+        // Quiz functionality
+        let quizAnswers = [];
         
-        // Obsługa formularza
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function nextQuestion(questionNum, answer) {
+            quizAnswers[questionNum - 1] = answer;
             
-            // Pobieranie adresu email
-            const email = emailInput.value;
+            const currentQuestion = document.querySelector(`.quiz-question[data-question="${questionNum}"]`);
+            if (currentQuestion) currentQuestion.classList.remove('active');
             
-            // Sprawdzanie czy email jest poprawny
-            if (!email || !email.includes('@')) {
-                alert('Proszę podać poprawny adres email.');
-                return;
+            if (questionNum < 3) {
+                const nextQ = document.querySelector(`.quiz-question[data-question="${questionNum + 1}"]`);
+                if (nextQ) nextQ.classList.add('active');
+            } else {
+                showResult();
+            }
+        }
+        
+        function showResult(finalAnswer = null) {
+            if (finalAnswer) {
+                quizAnswers[2] = finalAnswer;
             }
             
-            // Zmiana tekstu przycisku na "Przetwarzanie..."
-            const button = document.getElementById('checkout-button');
-            button.textContent = 'Przetwarzanie...';
-            button.disabled = true;
+            document.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
             
+            const quizResult = document.getElementById('quiz-result');
+            if (quizResult) {
+                quizResult.classList.add('show');
+                if (typeof gsap !== 'undefined') {
+                    gsap.from('.result-content', {duration: 0.8, scale: 0.8, opacity: 0, ease: 'back.out(1.7)'});
+                }
+            }
+        }
+
+
+        async function initiatePurchase() {
+            const emailInput = document.getElementById('customerEmail');
+            const email = emailInput ? emailInput.value : '';
+            
+            if (!email || !email.includes('@')) {
+                alert('Proszę wprowadzić poprawny adres email, aby kontynuować.');
+                if (emailInput) emailInput.focus();
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loading');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
             try {
-                // Wysyłanie żądania do serwera w celu utworzenia sesji checkout
-                const response = await fetch('/create-checkout-session', { 
+                // In a real implementation, you would call your backend to create a payment session
+                // This is a placeholder for the fetch call to your backend.
+                // Replace '/create-checkout-session' with your actual backend endpoint.
+                const response = await fetch('/create-checkout-session', { // THIS IS A PLACEHOLDER
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        items: [{ id: 1, quantity: 1 }],
-                        email: email
+                        productName: 'Przewodnik ChatGPT Kompletny', 
+                        priceInCents: 8900, 
+                        customerEmail: email, 
+                        successUrl: window.location.origin + '/sukces?session_id={CHECKOUT_SESSION_ID}', 
+                        cancelUrl: window.location.href, 
                     })
                 });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    // Przekierowanie na stronę płatności Stripe
-                    window.location.href = data.url;
-                } else {
-                    // Obsługa błędu
-                    throw new Error(data.error || 'Wystąpił błąd podczas tworzenia sesji płatności.');
-                }
-            } catch (error) {
-                console.error('Błąd:', error);
-                alert('Wystąpił błąd: ' + error.message);
-                // Przywracanie tekstu przycisku
-                button.textContent = 'KUP TERAZ';
-                button.disabled = false;
-            }
-        });
 
-        // Prosty licznik czasu
-        function updateCountdown() {
-            const now = new Date();
-            const hours = 23 - now.getHours();
-            const minutes = 59 - now.getMinutes();
-            const seconds = 59 - now.getSeconds();
-            
-            document.getElementById('countdown').textContent = 
-                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) { /* Ignore */ }
+                    const errorMessage = errorData?.error || `Błąd serwera: ${response.status}. Spróbuj ponownie.`;
+                    throw new Error(errorMessage);
+                }
+
+                const session = await response.json();
+
+                if (!session.id) {
+                    throw new Error('Nie udało się uzyskać ID sesji płatności z serwera.');
+                }
+
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+            } catch (error) {
+                console.error('Błąd inicjowania płatności:', error);
+                alert(`Wystąpił błąd podczas inicjowania płatności: ${error.message}. Sprawdź konsolę deweloperską po więcej szczegółów lub skontaktuj się z obsługą.`);
+            } finally {
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+            }
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-    </script>
+        // FAQ functionality - Original
+        function toggleFAQ(faqNumber) {
+            const faqAnswer = document.querySelector(`#faq-${faqNumber}`);
+            if (!faqAnswer) return;
 
-    <footer>
-    <div class="container">
-        <div class="footer-links">
-            <a href="/rodo.html" style="color: white;">RODO</a> | 
-            <a href="/politykaprywatnosci.html" style="color: white;">Polityka Prywatności</a> | 
-            <a href="/regulamin.html" style="color: white;">Regulamin</a>
-        </div>
-        <div class="social-links">
-            <a href="https://instagram.com/healthycakes.pl" target="_blank" style="color: white;"><i class="fab fa-instagram"></i> Instagram</a>
-        </div>
-        <div class="contact-info">
-            <p>Kontakt: <a href="mailto: kontakt@mail.healthycakes.pl" style="color: white;"> kontakt@mail.healthycakes.pl</a></p>
-        </div>
-       
-        <p>&copy; 2025 healthycakes.pl. Wszelkie prawa zastrzeżone.</p>
-    </div>
-</footer>
+            const faqItem = faqAnswer.parentElement;
+            
+            document.querySelectorAll('.faq-item.active').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-answer').classList.remove('open');
+                    const otherIcon = item.querySelector('.faq-icon');
+                    if (otherIcon) otherIcon.textContent = '+'; 
+                }
+            });
+            
+            faqItem.classList.toggle('active');
+            faqAnswer.classList.toggle('open');
+
+            const currentIcon = faqItem.querySelector('.faq-icon');
+            if (currentIcon) {
+                currentIcon.textContent = faqItem.classList.contains('active') ? '−' : '+';
+            }
+        }
+
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                // Only prevent default if it's a local anchor link on the same page
+                if (href.startsWith('#') && document.querySelector(href)) {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                // Allow normal behavior for external links or placeholders like #privacy-policy if they are not actual IDs on the page
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) {
+                if (window.scrollY > 50) { 
+                    header.style.background = 'rgba(255, 255, 255, 0.98)';
+                    header.style.boxShadow = '0 6px 20px rgba(0,0,0,0.1)'; 
+                } else {
+                    header.style.background = 'rgba(255, 255, 255, 0.95)';
+                    header.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)'; 
+                }
+            }
+        });
+        
+        // GSAP ScrollTrigger dependent animations
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            // Animate 'Why I Wrote' section cards on scroll
+            document.querySelectorAll('.reason-card').forEach((card) => {
+                gsap.from(card, {
+                    scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+                    duration: 0.8, y: 60, opacity: 0, ease: 'power2.out'
+                });
+            });
+            
+            document.querySelectorAll('.chapter-card').forEach((card) => {
+                gsap.from(card, {
+                    scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+                    duration: 0.7, x: card.offsetLeft < window.innerWidth / 2 ? -50 : 50, opacity: 0, ease: 'circ.out'
+                });
+            });
+
+            document.querySelectorAll('.feature-card').forEach((card) => {
+                gsap.from(card, {
+                    scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+                    duration: 0.6, scale: 0.8, opacity: 0, ease: 'power1.out'
+                });
+            });
+            
+            document.querySelectorAll('.testimonial').forEach((card) => {
+                gsap.from(card, {
+                    scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none none' },
+                    duration: 0.8, y: 50, opacity: 0, ease: 'expo.out'
+                });
+            });
+
+             document.querySelectorAll('.faq-item').forEach((item) => {
+                gsap.from(item, {
+                    scrollTrigger: { trigger: item, start: 'top 90%', toggleActions: 'play none none none' },
+                    duration: 0.5, opacity: 0, y: 20, ease: 'sine.out'
+                });
+            });
+
+        } else {
+            console.warn("GSAP ScrollTrigger not loaded. Some scroll animations will not work.");
+        }
+
+        if (!('ontouchstart' in window || navigator.maxTouchPoints)) {
+            document.addEventListener('mousemove', (e) => {
+                const cards = document.querySelectorAll('.feature-card, .reason-card, .chapter-card'); 
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        const cardX = rect.left + rect.width / 2;
+                        const cardY = rect.top + rect.height / 2;
+                        const deltaX = mouseX - cardX;
+                        const deltaY = mouseY - cardY;
+                        const maxRotate = 3; 
+                        const maxTranslate = 4;
+                        const influenceDistance = 300; 
+                        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                        if (distance < influenceDistance) {
+                            const factor = (influenceDistance - distance) / influenceDistance;
+                            const rotateY = (deltaX / (rect.width / 2)) * maxRotate * factor;
+                            const rotateX = -(deltaY / (rect.height / 2)) * maxRotate * factor;
+                            const translateY = -(deltaY / (rect.height / 2)) * maxTranslate * factor * 0.5; 
+                            card.style.transition = 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+                            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(${translateY}px)`;
+                        } else {
+                            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                        }
+                    }
+                });
+            });
+            document.querySelectorAll('.feature-card, .reason-card, .chapter-card').forEach(card => {
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = 'transform 0.5s ease-out';
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                });
+            });
+        }
+    </script>
 </body>
 </html>
